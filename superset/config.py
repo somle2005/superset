@@ -1850,6 +1850,9 @@ ENVIRONMENT_TAG_CONFIG = {
     },
 }
 
+SQLALCHEMY_DATABASE_URI = "mysql://root:Sm123456#9@192.168.10.151/data_gen"
+SUPERSET_SECRET_KEY ="/P5Z1UVvCJr1JEUEtPQXubKVYwaqoN21uv1AbUNW/L38YcL9Ud3PNVmO"
+
 
 # Extra related query filters make it possible to limit which objects are shown
 # in the UI. For examples, to only show "admin" or users starting with the letter "b" in
