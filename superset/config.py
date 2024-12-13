@@ -1855,7 +1855,7 @@ SUPERSET_SECRET_KEY ="/P5Z1UVvCJr1JEUEtPQXubKVYwaqoN21uv1AbUNW/L38YcL9Ud3PNVmO"
 
 
 # Extra related query filters make it possible to limit which objects are shown
-# in the UI. For examples, to only show "admin" or users starting with the letter "b" on
+# in the UI. For examples, to only show "admin" or users starting with the letter "b" in
 # the "Owners" dropdowns, you could add the following in your config:
 # def user_filter(query: Query, *args, *kwargs):
 #     from superset import security_manager
