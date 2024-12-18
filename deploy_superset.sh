@@ -87,7 +87,8 @@ source "${VENV_DIR}/bin/activate"
 pip install --upgrade pip
 pip install -e .
 pip install pymysql psycopg2-binary mysqlclient Pillow gunicorn pyodps  # 添加 Pillow 和 Gunicorn
-pip install pyodps
+pip uninstall pyodps
+pip install pyodps==0.11.6.1
 
 # 初始化数据库
 superset db upgrade
