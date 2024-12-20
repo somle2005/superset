@@ -1143,7 +1143,7 @@ class BaseEngineSpec:  # pylint: disable=too-many-public-methods
             sql = parsed_query.set_or_update_query_limit(limit, force=force)
 
         if cls.engine == 'odps':
-            sql = "set odps.sql.allow.fullscan=true;\n" + sql
+            sql = "set odps.sql.allow.fullscan=true;" + sql.replace('\n', '')
 
 
         return sql
