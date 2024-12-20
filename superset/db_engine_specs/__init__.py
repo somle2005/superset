@@ -43,6 +43,7 @@ from sqlalchemy.exc import NoSuchModuleError
 
 from superset import app, feature_flag_manager
 from superset.db_engine_specs.base import BaseEngineSpec
+from .odps import OdpsEngineSpec
 
 logger = logging.getLogger(__name__)
 
