@@ -1142,6 +1142,10 @@ class BaseEngineSpec:  # pylint: disable=too-many-public-methods
             parsed_query = sql_parse.ParsedQuery(sql, engine=cls.engine)
             sql = parsed_query.set_or_update_query_limit(limit, force=force)
 
+        if cls.engine == 'odps':
+            sql = "set odps.sql.allow.fullscan=true;\n" + sql
+
+
         return sql
 
     @classmethod
