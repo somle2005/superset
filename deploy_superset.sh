@@ -5,6 +5,7 @@ set -e
 # 定义变量
 REPO_URL="https://github.com/apache/superset.git"
 REPO_DIR="/home/sm/superset"
+FRONTEND_DIR="${REPO_DIR}/superset-frontend"
 VENV_DIR="/home/sm/spvenv"
 SECRET_FILE="${REPO_DIR}/.superset_secret_key"
 FLASK_APP="superset"
@@ -41,8 +42,8 @@ echo "npm 版本: $(npm -v)"
 echo "node 版本: $(node -v)"
 
 # 安装前端依赖并构建
-if [ -d "superset-frontend" ]; then
-    cd superset-frontend
+if [ -d $FRONTEND_DIR ]; then
+    cd $FRONTEND_DIR
     npm install
     npm run build
     cd ..
