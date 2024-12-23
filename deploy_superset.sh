@@ -75,13 +75,12 @@ echo "SUPERSET_SECRET_KEY=${SECRET_KEY}" > /home/sm/superset/.env
 export SUPERSET_SECRET_KEY="$SECRET_KEY"
 export FLASK_APP="$FLASK_APP"
 
+
 # 创建并激活虚拟环境
-if [ ! -d "$VENV_DIR" ]; then
-    python3 -m venv "$VENV_DIR"
-    echo "虚拟环境已创建在 ${VENV_DIR}。"
-else
-    echo "虚拟环境已存在在 ${VENV_DIR}，跳过创建步骤。"
-fi
+rm -rf $VENV_DIR
+python3 -m venv "$VENV_DIR"
+echo "虚拟环境已创建在 ${VENV_DIR}。"
+
 
 # 激活虚拟环境
 source "${VENV_DIR}/bin/activate"
