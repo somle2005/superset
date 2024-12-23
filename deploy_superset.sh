@@ -5,7 +5,7 @@ set -e
 # 定义变量
 REPO_URL="https://github.com/apache/superset.git"
 REPO_DIR="/home/sm/superset"
-VENV_DIR="${REPO_DIR}/spvenv"
+VENV_DIR="/home/sm/spvenv"
 SECRET_FILE="${REPO_DIR}/.superset_secret_key"
 FLASK_APP="superset"
 ADMIN_USERNAME="sm"
