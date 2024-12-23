@@ -42,14 +42,9 @@ echo "npm 版本: $(npm -v)"
 echo "node 版本: $(node -v)"
 
 # 安装前端依赖并构建
-if [ -d $FRONTEND_DIR ]; then
-    cd $FRONTEND_DIR
-    npm install
-    npm run build
-    cd ..
-else
-    echo "未找到 superset-frontend 目录，跳过前端构建步骤。"
-fi
+cd "$FRONTEND_DIR"
+npm install
+npm run build
 
 cd "$REPO_DIR"
 
