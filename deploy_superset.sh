@@ -40,11 +40,14 @@ fi
 echo "npm 版本: $(npm -v)"
 echo "node 版本: $(node -v)"
 
-# 克隆仓库（如果不存在）
-if [ ! -d "$REPO_DIR" ]; then
-    git clone "$REPO_URL" "$REPO_DIR"
+# 安装前端依赖并构建
+if [ -d "superset-frontend" ]; then
+    cd superset-frontend
+    npm install
+    npm run build
+    cd ..
 else
-    echo "仓库已存在于 ${REPO_DIR}，跳过克隆步骤。"
+    echo "未找到 superset-frontend 目录，跳过前端构建步骤。"
 fi
 
 cd "$REPO_DIR"
@@ -104,14 +107,6 @@ superset fab create-admin \
 
 superset init
 
-# 安装前端依赖并构建
-if [ -d "superset-frontend" ]; then
-    cd superset-frontend
-    npm install
-    npm run build
-    cd ..
-else
-    echo "未找到 superset-frontend 目录，跳过前端构建步骤。"
-fi
+
 
 echo "部署脚本执行完毕。"
