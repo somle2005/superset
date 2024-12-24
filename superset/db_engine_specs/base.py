@@ -1696,17 +1696,20 @@ class BaseEngineSpec:  # pylint: disable=too-many-public-methods
 
         if limit and cls.allow_limit_clause:
             qry = qry.limit(limit)
-        if latest_partition:
-            partition_query = cls.where_latest_partition(
-                database,
-                table,
-                qry,
-                columns=cols,
-            )
-            if partition_query is not None:
-                qry = partition_query
+        # if latest_partition:
+        #     partition_query = cls.where_latest_partition(
+        #         database,
+        #         table,
+        #         qry,
+        #         columns=cols,
+        #     )
+        #     if partition_query is not None:
+        #         qry = partition_query
         sql = database.compile_sqla_query(qry)
         if indent:
+            sql_con_url = engine.url
+            if 'odps' in sql_con_url:
+                sql=sql.replace('`', '').replace('\n', '')
             sql = SQLScript(sql, engine=cls.engine).format()
         return sql
 

@@ -80,6 +80,14 @@ else
     echo "虚拟环境已存在在 ${VENV_DIR}，跳过创建步骤。"
 fi
 
+
+#安装pyodps
+cd /home/sm
+git clone -b somle-main --single-branch https://github.com/yccnew20/aliyun-odps-python-sdk.git
+cd aliyun-odps-python-sdk
+pip install -e .
+
+
 # 激活虚拟环境
 source "${VENV_DIR}/bin/activate"
 
@@ -87,8 +95,7 @@ source "${VENV_DIR}/bin/activate"
 pip install --upgrade pip
 pip install -e .
 pip install pymysql psycopg2-binary mysqlclient Pillow gunicorn   # 添加 Pillow 和 Gunicorn
-pip uninstall pyodps
-pip install pyodps==0.10.7
+
 
 # 初始化数据库
 superset db upgrade
