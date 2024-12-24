@@ -5,7 +5,8 @@ set -e
 # 定义变量
 REPO_URL="https://github.com/apache/superset.git"
 REPO_DIR="/home/sm/superset"
-VENV_DIR="${REPO_DIR}/spvenv"
+FRONTEND_DIR="${REPO_DIR}/superset-frontend"
+VENV_DIR="/home/sm/spvenv"
 SECRET_FILE="${REPO_DIR}/.superset_secret_key"
 FLASK_APP="superset"
 ADMIN_USERNAME="sm"
@@ -40,12 +41,10 @@ fi
 echo "npm 版本: $(npm -v)"
 echo "node 版本: $(node -v)"
 
-# 克隆仓库（如果不存在）
-if [ ! -d "$REPO_DIR" ]; then
-    git clone "$REPO_URL" "$REPO_DIR"
-else
-    echo "仓库已存在于 ${REPO_DIR}，跳过克隆步骤。"
-fi
+# 安装前端依赖并构建
+cd "$FRONTEND_DIR"
+npm install
+npm run build
 
 cd "$REPO_DIR"
 
@@ -72,13 +71,12 @@ echo "SUPERSET_SECRET_KEY=${SECRET_KEY}" > /home/sm/superset/.env
 export SUPERSET_SECRET_KEY="$SECRET_KEY"
 export FLASK_APP="$FLASK_APP"
 
+
 # 创建并激活虚拟环境
-if [ ! -d "$VENV_DIR" ]; then
-    python3 -m venv "$VENV_DIR"
-    echo "虚拟环境已创建在 ${VENV_DIR}。"
-else
-    echo "虚拟环境已存在在 ${VENV_DIR}，跳过创建步骤。"
-fi
+rm -rf $VENV_DIR
+python3 -m venv "$VENV_DIR"
+echo "虚拟环境已创建在 ${VENV_DIR}。"
+
 
 
 #安装pyodps
@@ -94,7 +92,9 @@ source "${VENV_DIR}/bin/activate"
 # 安装依赖（开发模式）
 pip install --upgrade pip
 pip install -e .
+
 pip install pymysql psycopg2-binary mysqlclient Pillow gunicorn   # 添加 Pillow 和 Gunicorn
+
 
 
 # 初始化数据库
@@ -111,14 +111,6 @@ superset fab create-admin \
 
 superset init
 
-# 安装前端依赖并构建
-if [ -d "superset-frontend" ]; then
-    cd superset-frontend
-    npm install
-    npm run build
-    cd ..
-else
-    echo "未找到 superset-frontend 目录，跳过前端构建步骤。"
-fi
+
 
 echo "部署脚本执行完毕。"
