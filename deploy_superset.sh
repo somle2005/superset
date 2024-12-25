@@ -25,6 +25,10 @@ export SUPERSET_SECRET_KEY=$SUPERSET_SECRET_KEY
 # 添加 npm 所在的目录到 PATH，而不是覆盖 PATH
 export PATH="/home/sm/.nvm/versions/node/v22.12.0/bin:$PATH"
 
+sudo systemctl stop superset
+
+
+
 # 函数：检查命令是否存在
 command_exists () {
     command -v "$1" >/dev/null 2>&1
@@ -81,6 +85,16 @@ echo "虚拟环境已创建在 ${VENV_DIR}。"
 # 激活虚拟环境
 source "${VENV_DIR}/bin/activate"
 
+
+sudo chown -R sm:sm /home/sm/spvenv/
+sudo rm -rf /home/sm/aliyun-odps-python-sdk/
+cd /home/smsudo rm -rf /home/sm/aliyun-odps-python-sdk/
+cd /home/sm
+git clone -b somle-main --single-branch https://github.com/yccnew20/aliyun-odps-python-sdk.git
+sudo chown -R sm:sm /home/sm/aliyun-odps-python-sdk/
+cd /home/sm/aliyun-odps-python-sdk/
+pip install -e .
+
 # 安装依赖（开发模式）
 pip install --upgrade pip
 pip install -e .
@@ -102,6 +116,9 @@ superset fab create-admin \
 
 superset init
 
+sudo systemctl daemon-reload
+sudo systemctl start superset
+sudo systemctl enable superset
 
 
 echo "部署脚本执行完毕。"
