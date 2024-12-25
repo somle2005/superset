@@ -78,17 +78,16 @@ python3 -m venv "$VENV_DIR"
 echo "虚拟环境已创建在 ${VENV_DIR}。"
 
 
-
-#安装pyodps
-cd /home/sm
-git clone -b somle-main --single-branch https://github.com/yccnew20/aliyun-odps-python-sdk.git
-cd aliyun-odps-python-sdk
-pip install -e .
-
-
 # 激活虚拟环境
 source "${VENV_DIR}/bin/activate"
 
+sudo chown -R sm:sm /home/sm/spvenv/
+git clone -b somle-main --single-branch https://github.com/yccnew20/aliyun-odps-python-sdk.git
+sudo chown -R sm:sm /home/sm/aliyun-odps-python-sdk/
+cd /home/sm/aliyun-odps-python-sdk/
+pip install -e .
+
+cd $REPO_DIR
 # 安装依赖（开发模式）
 pip install --upgrade pip
 pip install -e .
