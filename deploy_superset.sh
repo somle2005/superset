@@ -89,6 +89,7 @@ source "${VENV_DIR}/bin/activate"
 sudo chown -R sm:sm /home/sm/spvenv/
 sudo rm -rf /home/sm/aliyun-odps-python-sdk/
 sudo chown -R sm:sm /home/sm/spvenv/
+cd /home/sm
 git clone -b somle-main --single-branch https://github.com/yccnew20/aliyun-odps-python-sdk.git
 sudo chown -R sm:sm /home/sm/aliyun-odps-python-sdk/
 cd /home/sm/aliyun-odps-python-sdk/
