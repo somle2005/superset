@@ -1858,7 +1858,8 @@ SQLALCHEMY_DATABASE_URI = "mysql://root:Sm123456#9@192.168.10.151/supersetdb"
 SECRET_KEY = "/P5Z1UVvCJr1JEUEtPQXubKVYwaqoN21uv1AbUNW/L38YcL9Ud3PNVmO"
 ENCRYPTION_KEY = "aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890abcdEFGhIjKlM="
 EMBEDDING_ENABLED = True
-OVERRIDE_HTTP_HEADERS = { "Content-Security-Policy": "frame-ancestors http://erp.somle.com;" }
+OVERRIDE_HTTP_HEADERS = { "X-Frame-Options": "ALLOWALL" }
+# OVERRIDE_HTTP_HEADERS = { "Content-Security-Policy": "frame-ancestors http://erp.somle.com;" }
 # Extra related query filters make it possible to limit which objects are shown
 # in the UI. For examples, to only show "admin" or users starting with the letter "b" in
 # the "Owners" dropdowns, you could add the following in your config:
