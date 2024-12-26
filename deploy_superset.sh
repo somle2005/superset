@@ -88,19 +88,21 @@ source "${VENV_DIR}/bin/activate"
 
 sudo chown -R sm:sm /home/sm/spvenv/
 sudo rm -rf /home/sm/aliyun-odps-python-sdk/
-cd /home/smsudo rm -rf /home/sm/aliyun-odps-python-sdk/
-cd /home/sm
+sudo chown -R sm:sm /home/sm/spvenv/
 git clone -b somle-main --single-branch https://github.com/yccnew20/aliyun-odps-python-sdk.git
 sudo chown -R sm:sm /home/sm/aliyun-odps-python-sdk/
 cd /home/sm/aliyun-odps-python-sdk/
 pip install -e .
 
+
+cd $REPO_DIR
 # 安装依赖（开发模式）
 pip install --upgrade pip
 pip install -e .
-pip install pymysql psycopg2-binary mysqlclient Pillow gunicorn pyodps  # 添加 Pillow 和 Gunicorn
-# pip uninstall pyodps
-# pip install pyodps==0.10.7
+
+pip install pymysql psycopg2-binary mysqlclient Pillow gunicorn   # 添加 Pillow 和 Gunicorn
+
+
 
 # 初始化数据库
 superset db upgrade
