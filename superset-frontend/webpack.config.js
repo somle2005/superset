@@ -190,6 +190,7 @@ if (isDevMode) {
   // Ref: https://github.com/gaearon/react-hot-loader/issues/141
   PREAMBLE.unshift(
     `webpack-dev-server/client?http://localhost:${devserverPort}`,
+    // `webpack-dev-server/client?http://192.168.10.199:${devserverPort}`,
   );
 }
 
@@ -544,9 +545,16 @@ console.log(''); // pure cosmetic new line
 let proxyConfig = getProxyConfig();
 
 if (isDevMode) {
+  
+  // target: 'http://localhost:8088',
+  console.log('有进来这里', proxyConfig)
+  //
+  //proxyConfig.target = 'http://192.168.10.199:8088'
+
+  // proxyConfig.target = 'http://localhost:8088';
   config.devtool = 'eval-cheap-module-source-map';
   config.devServer = {
-    onBeforeSetupMiddleware(devServer) {
+   onBeforeSetupMiddleware(devServer) {
       // load proxy config when manifest updates
       const { afterEmit } = getCompilerHooks(devServer.compiler);
       afterEmit.tap('ManifestPlugin', manifest => {
@@ -558,10 +566,24 @@ if (isDevMode) {
     port: devserverPort,
     // Only serves bundled files from webpack-dev-server
     // and proxy everything else to Superset backend
-    proxy: [
-      // functions are called for every request
-      () => proxyConfig,
-    ],
+    // proxy: [
+    //   // functions are called for every request
+    //   () => {
+    //     console.log(proxyConfig,'proxyConfig')
+        
+
+    //     return proxyConfig
+    //   },
+    // ],
+    proxy: {
+      '/': {
+        ...proxyConfig,
+        changeOrigin: true,
+        // target: 'http://192.168.10.17:8088'
+        target: 'http://192.168.10.199:8088', // 后端服务的IP和端口
+
+      }
+    },
     client: {
       overlay: {
         errors: true,
@@ -596,4 +618,9 @@ const smp = new SpeedMeasurePlugin({
   disable: !measure,
 });
 
-module.exports = smp.wrap(config);
+const configFinal = smp.wrap(config);
+
+// configFinal.devServer.host = '192.168.10.199'
+// configFinal.devServer.host = 'localhost'
+console.log('configFinal', configFinal.devServer)
+module.exports = configFinal

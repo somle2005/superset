@@ -30,6 +30,8 @@ const parsedEnvArg = () => {
   return {};
 };
 
+console.log('npm run dev-webpack.proxy-config')
+
 const { supersetPort = 8088, superset: supersetUrl = null } = parsedEnvArg();
 const backend = (supersetUrl || `http://localhost:${supersetPort}`).replace(
   '//+$/',

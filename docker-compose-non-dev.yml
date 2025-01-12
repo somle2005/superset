@@ -72,6 +72,8 @@ services:
       - 8088:8088
     depends_on: *superset-depends-on
     volumes: *superset-volumes
+    environment:
+      - NPM_CONFIG_REGISTRY=https://registry.npmmirror.com
 
   superset-init:
     container_name: superset_init
