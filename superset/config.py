@@ -371,7 +371,7 @@ PUBLIC_ROLE_LIKE: str | None = None
 # ---------------------------------------------------
 # Setup default language
 # BABEL_DEFAULT_LOCALE = "en"
-BABEL_DEFAULT_LOCALE = "cn"
+BABEL_DEFAULT_LOCALE = "zh"
 # Your application default translation path
 BABEL_DEFAULT_FOLDER = "superset/translations"
 # The allowed translation for your app
