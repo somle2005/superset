@@ -1604,6 +1604,7 @@ TALISMAN_CONFIG = {
             "'self'",
             "https://api.mapbox.com",
             "https://events.mapbox.com",
+            "https://maps.googleapis.com",
         ],
         "object-src": "'none'",
         "style-src": [
@@ -1627,13 +1628,14 @@ TALISMAN_DEV_CONFIG = {
             "data:",
             "https://apachesuperset.gateway.scarf.sh",
             "https://static.scarf.sh/",
-            "https://avatars.slack-edge.com",
+            "https://avatars.slack-edge.com"
         ],
         "worker-src": ["'self'", "blob:"],
         "connect-src": [
             "'self'",
             "https://api.mapbox.com",
             "https://events.mapbox.com",
+            "https://maps.googleapis.com",
         ],
         "object-src": "'none'",
         "style-src": [

@@ -16,35 +16,88 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import Echart from '../components/Echart';
 import { WaterfallChartTransformedProps } from './types';
-import { EventHandlers } from '../types';
+import { useRef } from 'react';
+import { initData, initMap, loadGoogleMapsScript, updateMap } from './utils';
+
+// let map: google.maps.Map | null = null;
+// let heatmap: google.maps.visualization.HeatmapLayer | null = null;
+// let markers: google.maps.marker.AdvancedMarkerElement[] = [];
+// let markersVisible = true;
+// let AdvancedMarkerElement: any;
+
+/* eslint-disable */
+
+/* <script async
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&loading=async&libraries=visualization&callback=initMap">
+</script> */
+
+// async function fetchStreetView(latitude: number, longitude: number): Promise<string | null> {
+//   const cacheKey = `${latitude},${longitude}`
+//   // if (imageCache[cacheKey]) return imageCache[cacheKey]
+
+//   try {
+
+//     const response = await fetch(
+//       `https://kerwin.org.cn/api/street-view?latitude=${latitude}&longitude=${longitude}`,
+//       { method: 'GET' },
+//     );
+
+//     const blobFetch = await response.blob();
+//     const data = await blobFetch;
+//     console.log(data,'blobFetchData-blobFetchData');
+
+//     console.log('marker标记点击', data)
+//     const imageUrl = URL.createObjectURL(data)
+//     // imageCache[cacheKey] = imageUrl
+//     return imageUrl
+//   } catch (error) {
+//     console.error('获取Street View图像时出错:', error)
+//     return null
+//   }
+// }
+
+// fetchStreetView(41.747041,-87.607832)
+
+const {
+  imageCache,
+  selectedSkus,
+  mapId,
+  YOUR_API_KEY,
+  url,
+  map,
+  heatmap,
+  markers,
+} = initData();
 
 export default function EchartsWaterfall(
   props: WaterfallChartTransformedProps,
 ) {
-  const { height, width, echartOptions, refs, onLegendStateChanged } = props;
+  const mapContainer = useRef(null);
 
-  const eventHandlers: EventHandlers = {
-    legendselectchanged: payload => {
-      onLegendStateChanged?.(payload.selected);
-    },
-    legendselectall: payload => {
-      onLegendStateChanged?.(payload.selected);
-    },
-    legendinverseselect: payload => {
-      onLegendStateChanged?.(payload.selected);
-    },
-  };
+
+  const dataObj = { mapContainer, mapId };
+
+  // const { height, width, echartOptions, refs, onLegendStateChanged } = props;
+
+  // const url = `https://maps.googleapis.com/maps/api/js?key=${YOUR_API_KEY}&loading=async&libraries=visualization&callback=initMap`;
+
+  console.log(props,'props')
+
+  loadGoogleMapsScript(url, initMap, dataObj);
+
+  // 获取props数据进行更新地图处理
+
+  //updateMap({map,heatmap,data,markers})
 
   return (
-    <div className="GoogleHeatMap">GoogleHeatMap展示出来</div>
-    // <Echart
-    //   refs={refs}
-    //   height={height}
-    //   width={width}
-    //   echartOptions={echartOptions}
-    //   eventHandlers={eventHandlers}
-    // />
+    <div className="GoogleHeatMap">
+      <div
+        id="map"
+        ref={mapContainer}
+        style={{ width: '100%', height: '100vh' }}
+      ></div>
+      GoogleHeatMap展示出来
+    </div>
   );
 }
