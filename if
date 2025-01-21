@@ -1,0 +1,62 @@
+[1mdiff --git a/deploy_superset.sh b/deploy_superset.sh[m
+[1mindex 8b17fcbb4..5722e8f27 100644[m
+[1m--- a/deploy_superset.sh[m
+[1m+++ b/deploy_superset.sh[m
+[36m@@ -90,11 +90,11 @@[m [msudo chown -R sm:sm /home/sm/spvenv/[m
+ sudo rm -rf /home/sm/aliyun-odps-python-sdk/[m
+ sudo chown -R sm:sm /home/sm/spvenv/[m
+ cd /home/sm[m
+[31m-git clone -b somle-main --single-branch https://github.com/yccnew20/aliyun-odps-python-sdk.git[m
+[31m-sudo chown -R sm:sm /home/sm/aliyun-odps-python-sdk/[m
+[31m-cd /home/sm/aliyun-odps-python-sdk/[m
+[31m-pip install -e .[m
+[31m-[m
+[32m+[m[32m#git clone -b somle-main --single-branch https://github.com/yccnew20/aliyun-odps-python-sdk.git[m
+[32m+[m[32m#sudo chown -R sm:sm /home/sm/aliyun-odps-python-sdk/[m
+[32m+[m[32m#cd /home/sm/aliyun-odps-python-sdk/[m
+[32m+[m[32m#pip install -e .[m
+[32m+[m[32mpip install pyodps==0.10.7[m
+ [m
+ cd $REPO_DIR[m
+ # 安装依赖（开发模式）[m
+[1mdiff --git a/superset/db_engine_specs/base.py b/superset/db_engine_specs/base.py[m
+[1mindex 6f0641aa3..23a4844bd 100644[m
+[1m--- a/superset/db_engine_specs/base.py[m
+[1m+++ b/superset/db_engine_specs/base.py[m
+[36m@@ -1864,6 +1864,9 @@[m [mclass BaseEngineSpec:  # pylint: disable=too-many-public-methods[m
+         if cls.arraysize:[m
+             cursor.arraysize = cls.arraysize[m
+         try:[m
+[32m+[m[32m            # print(query)[m
+[32m+[m[32m            # input(22)[m
+[32m+[m[32m            query = query.replace('`default`', 'df_ch_165421')[m
+             cursor.execute(query)[m
+         except Exception as ex:[m
+             if database.is_oauth2_enabled() and cls.needs_oauth2(ex):[m
+[1mdiff --git a/superset/models/core.py b/superset/models/core.py[m
+[1mindex 9b06932af..c49cb323d 100755[m
+[1m--- a/superset/models/core.py[m
+[1m+++ b/superset/models/core.py[m
+[36m@@ -817,6 +817,9 @@[m [mclass Database(Model, AuditMixinNullable, ImportExportMixin):  # pylint: disable[m
+         :param force: whether to force refresh the cache[m
+         :return: set of views[m
+         """[m
+[32m+[m[32m        print(schema)[m
+[32m+[m[32m        if schema == 'df_ch_165421':[m
+[32m+[m[32m            return [][m
+         try:[m
+             with self.get_inspector(catalog=catalog, schema=schema) as inspector:[m
+                 return {[m
+[1mdiff --git a/superset/sqllab/sql_json_executer.py b/superset/sqllab/sql_json_executer.py[m
+[1mindex e0d723c7b..80a2211ef 100644[m
+[1m--- a/superset/sqllab/sql_json_executer.py[m
+[1m+++ b/superset/sqllab/sql_json_executer.py[m
+[36m@@ -111,7 +111,7 @@[m [mclass SynchronousSqlJsonExecutor(SqlJsonExecutorBase):[m
+                     [SupersetError(**params) for params in data["errors"]]  # type: ignore[m
+                 )[m
+             # old string-only error message[m
+[31m-            print(data)[m
+[32m+[m[32m            # print(data)[m
+             raise SupersetGenericDBErrorException(data["error"])  # type: ignore[m
+ [m
+         return SqlJsonExecutionStatus.HAS_RESULTS[m

@@ -817,6 +817,9 @@ class Database(Model, AuditMixinNullable, ImportExportMixin):  # pylint: disable
         :param force: whether to force refresh the cache
         :return: set of views
         """
+        print(schema)
+        if schema == 'df_ch_165421':
+            return []
         try:
             with self.get_inspector(catalog=catalog, schema=schema) as inspector:
                 return {
