@@ -94,7 +94,7 @@ git clone -b somle-main --single-branch https://github.com/yccnew20/aliyun-odps-
 sudo chown -R sm:sm /home/sm/aliyun-odps-python-sdk/
 cd /home/sm/aliyun-odps-python-sdk/
 pip install -e .
-
+# pip install pyodps==0.10.7
 
 cd $REPO_DIR
 # 安装依赖（开发模式）

@@ -1864,6 +1864,9 @@ class BaseEngineSpec:  # pylint: disable=too-many-public-methods
         if cls.arraysize:
             cursor.arraysize = cls.arraysize
         try:
+            # print(query)
+            # input(22)
+            query = query.replace('`default`', 'df_ch_165421')
             cursor.execute(query)
         except Exception as ex:
             if database.is_oauth2_enabled() and cls.needs_oauth2(ex):
