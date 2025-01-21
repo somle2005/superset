@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { WaterfallChartTransformedProps } from './types';
 import { useRef } from 'react';
-import { initData, initMap, loadGoogleMapsScript, updateMap } from './utils';
+import { WaterfallChartTransformedProps } from './types';
+import { initData, initMap, loadGoogleMapsScript, updateMap, loadData } from './utils';
 
 // let map: google.maps.Map | null = null;
 // let heatmap: google.maps.visualization.HeatmapLayer | null = null;
@@ -59,15 +59,17 @@ import { initData, initMap, loadGoogleMapsScript, updateMap } from './utils';
 
 // fetchStreetView(41.747041,-87.607832)
 
-const {
+let {
   imageCache,
-  selectedSkus,
   mapId,
   YOUR_API_KEY,
   url,
   map,
   heatmap,
   markers,
+  selectedYear,
+  selectedPlatforms,
+  selectedSkus,
 } = initData();
 
 export default function EchartsWaterfall(
@@ -75,20 +77,31 @@ export default function EchartsWaterfall(
 ) {
   const mapContainer = useRef(null);
 
+  console.log(props, 'props');
 
-  const dataObj = { mapContainer, mapId };
+
+  
+  // 获取props数据进行更新地图处理
+
+  //updateMap({map,heatmap,data,markers})
+
+  selectedYear = []
+  selectedPlatforms = []
+  selectedSkus = ['A106001MB']
+  const queryData = {selectedYear,selectedPlatforms,selectedSkus}
+  const center = { lat: 38.913611, lng: -77.013222 }
+
+  const dataObj = { mapContainer, mapId, queryData,center };
 
   // const { height, width, echartOptions, refs, onLegendStateChanged } = props;
 
   // const url = `https://maps.googleapis.com/maps/api/js?key=${YOUR_API_KEY}&loading=async&libraries=visualization&callback=initMap`;
 
-  console.log(props,'props')
+
+   
 
   loadGoogleMapsScript(url, initMap, dataObj);
 
-  // 获取props数据进行更新地图处理
-
-  //updateMap({map,heatmap,data,markers})
 
   return (
     <div className="GoogleHeatMap">
@@ -97,7 +110,6 @@ export default function EchartsWaterfall(
         ref={mapContainer}
         style={{ width: '100%', height: '100vh' }}
       ></div>
-      GoogleHeatMap展示出来
     </div>
   );
 }

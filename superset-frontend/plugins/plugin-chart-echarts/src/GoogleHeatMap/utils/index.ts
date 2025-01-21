@@ -6,6 +6,7 @@
 1-初始化地图-拿接口数据配置
 loadGoogleMapsScript(url,key,initMap)
 new Map(zoom,center,mapId)
+loadaData(data)-1s后调用数据加载地图
 
 2-后续操作
 拿到props数据 更新地图
@@ -24,18 +25,60 @@ data有数据坐标 开始循环
 调用 fetchStreetView 获取街景
  */
 
+const createIdleExcute = () => {
+  const idleCallbackFn = (task: () => void) => {
+    window.requestIdleCallback(deadline => {
+      if (deadline.timeRemaining() > 0) {
+        task();
+      } else {
+        idleCallbackFn(task);
+      }
+    });
+  };
+  const frameFn = (task: () => void) => {
+    const start = Date.now();
+    window.requestAnimationFrame(() => {
+      if (Date.now() - start < 16.6) {
+        task();
+      } else {
+        frameFn(task);
+      }
+    });
+  };
+  const timeoutFn = (task: () => void) => {
+    setTimeout(() => {
+      task();
+    }, 0);
+  };
+  // @ts-ignore
+  if (window.requestIdleCallback) {
+    return idleCallbackFn;
+    // @ts-ignore
+    // eslint-disable-next-line no-else-return
+  } else if (window.requestAnimationFrame) {
+    return frameFn;
+  } else {
+    // @ts-ignore
+    return timeoutFn;
+  }
+};
+
+const idleExcute = createIdleExcute();
+
 const years: string[] = [];
 const platforms: string[] = [];
 const skus: string[] = [];
 
 const selectedYear: string[] = [];
 const selectedPlatforms: string[] = [];
-const selectedSkus: string[] = [];
+let selectedSkus: string[] = [];
 
 let map: google.maps.Map | null = null;
+// eslint-disable-next-line prefer-const
 let heatmap: google.maps.visualization.HeatmapLayer | null = null;
+// eslint-disable-next-line prefer-const
 let markers: google.maps.marker.AdvancedMarkerElement[] = [];
-let markersVisible = true;
+const markersVisible = true;
 let AdvancedMarkerElement: any;
 const imageCache: Record<string, string> = {};
 
@@ -58,20 +101,22 @@ const colorPalette = [
 
 export const initData = () => ({
   imageCache,
-  selectedSkus,
   mapId,
   YOUR_API_KEY,
   url,
   map,
   heatmap,
   markers,
+  selectedYear,
+  selectedPlatforms,
+  selectedSkus,
 });
 
 /* eslint-disable */
 export async function initMap(dataobj: any) {
   // console.log('执行了initMap', window.google);
 
-  const { mapContainer, mapId } = dataobj;
+  const { mapContainer, mapId, queryData, center } = dataobj;
 
   const { Map } = await google.maps.importLibrary('maps');
   AdvancedMarkerElement = (await google.maps.importLibrary('marker'))
@@ -80,7 +125,8 @@ export async function initMap(dataobj: any) {
   console.log(mapContainer.current, 'mapContainer.current');
   map = new Map(mapContainer.current, {
     zoom: 6,
-    center: { lat: 38.913611, lng: -77.013222 },
+    // center: { lat: 38.913611, lng: -77.013222 },
+    center: center,
     mapId,
   });
 
@@ -98,6 +144,12 @@ export async function initMap(dataobj: any) {
       strokeWeight: 1,
     });
   }
+  setTimeout(() => {
+    // 浏览器有空闲时间才进行执行
+    selectedSkus = queryData.selectedSkus
+    console.log(selectedSkus, 'selectedSkus-变化了吗');
+    idleExcute(() => loadData(queryData));
+  }, 1000);
 }
 
 export function loadGoogleMapsScript(
@@ -175,10 +227,6 @@ async function fetchStreetView(
     const data = await blobFetch;
     console.log(data, 'blobFetchData-blobFetchData');
 
-    // const { data } = await axios.get(
-    //   `https://kerwin.org.cn/api/street-view?latitude=${latitude}&longitude=${longitude}`,
-    //   { responseType: 'blob' },
-    // );
     const imageUrl = URL.createObjectURL(data);
     imageCache[cacheKey] = imageUrl;
     return imageUrl;
@@ -234,4 +282,29 @@ export function updateMap(updateMapData: {
   const { map, heatmap, data, markers } = updateMapData;
   updateHeatmap(map, heatmap, data);
   updateMarkers(data, markers);
+}
+export async function loadData(query: {
+  selectedYear: any[];
+  selectedPlatforms: any[];
+  selectedSkus: any[];
+}) {
+  const { selectedYear, selectedPlatforms, selectedSkus } = query;
+  const apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYear.join(
+    ',',
+  )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}`;
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    console.log(data, '加载数据data');
+    if (Array.isArray(data)) {
+      updateMap({
+        map,
+        heatmap,
+        data,
+        markers,
+      });
+    }
+  } catch (error) {
+    console.error('获取数据时出错:', error);
+  }
 }
