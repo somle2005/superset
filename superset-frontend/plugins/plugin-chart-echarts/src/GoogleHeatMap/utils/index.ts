@@ -147,7 +147,6 @@ export async function initMap(dataobj: any) {
   setTimeout(() => {
     // 浏览器有空闲时间才进行执行
     selectedSkus = queryData.selectedSkus
-    console.log(selectedSkus, 'selectedSkus-变化了吗');
     idleExcute(() => loadData(queryData));
   }, 1000);
 }
@@ -225,7 +224,6 @@ async function fetchStreetView(
 
     const blobFetch = await response.blob();
     const data = await blobFetch;
-    console.log(data, 'blobFetchData-blobFetchData');
 
     const imageUrl = URL.createObjectURL(data);
     imageCache[cacheKey] = imageUrl;
@@ -295,7 +293,6 @@ export async function loadData(query: {
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
-    console.log(data, '加载数据data');
     if (Array.isArray(data)) {
       updateMap({
         map,

@@ -18,46 +18,9 @@
  */
 import { useRef } from 'react';
 import { WaterfallChartTransformedProps } from './types';
-import { initData, initMap, loadGoogleMapsScript, updateMap, loadData } from './utils';
-
-// let map: google.maps.Map | null = null;
-// let heatmap: google.maps.visualization.HeatmapLayer | null = null;
-// let markers: google.maps.marker.AdvancedMarkerElement[] = [];
-// let markersVisible = true;
-// let AdvancedMarkerElement: any;
+import { initData, initMap, loadGoogleMapsScript } from './utils';
 
 /* eslint-disable */
-
-/* <script async
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&loading=async&libraries=visualization&callback=initMap">
-</script> */
-
-// async function fetchStreetView(latitude: number, longitude: number): Promise<string | null> {
-//   const cacheKey = `${latitude},${longitude}`
-//   // if (imageCache[cacheKey]) return imageCache[cacheKey]
-
-//   try {
-
-//     const response = await fetch(
-//       `https://kerwin.org.cn/api/street-view?latitude=${latitude}&longitude=${longitude}`,
-//       { method: 'GET' },
-//     );
-
-//     const blobFetch = await response.blob();
-//     const data = await blobFetch;
-//     console.log(data,'blobFetchData-blobFetchData');
-
-//     console.log('marker标记点击', data)
-//     const imageUrl = URL.createObjectURL(data)
-//     // imageCache[cacheKey] = imageUrl
-//     return imageUrl
-//   } catch (error) {
-//     console.error('获取Street View图像时出错:', error)
-//     return null
-//   }
-// }
-
-// fetchStreetView(41.747041,-87.607832)
 
 let {
   imageCache,
@@ -72,36 +35,74 @@ let {
   selectedSkus,
 } = initData();
 
+// const testData = () => {
+//   selectedYear = [];
+//   selectedPlatforms = [];
+//   selectedSkus = ['A106001MB'];
+//   const queryData = { selectedYear, selectedPlatforms, selectedSkus };
+//   const center = { lat: 38.913611, lng: -77.013222 };
+
+//   const dataObj = { mapContainer, mapId, queryData, center };
+// }
+
+const getFilterData = (adhocFilters: any) => {
+  const latitude =
+    adhocFilters.find((item: any) => item.subject === 'latitude')?.comparator ??
+    38.913611;
+  const longtitude =
+    adhocFilters.find((item: any) => item.subject === 'longtitude')
+      ?.comparator ?? -77.013222;
+
+  const selectFiler: any = {
+    platform: [],
+    sku: [],
+    year: [],
+  };
+
+  const filterData: any = {
+    latitude,
+    longtitude,
+  };
+
+  for (const key in selectFiler) {
+    const target =
+      adhocFilters.find((item: any) => item.subject === key)?.comparator || [];
+    selectFiler[key] = target;
+    filterData[key + 's'] = selectFiler[key];
+  }
+  // console.log(filterData, 'filterData');
+  return filterData;
+};
+
 export default function EchartsWaterfall(
   props: WaterfallChartTransformedProps,
 ) {
   const mapContainer = useRef(null);
 
-  console.log(props, 'props');
+  // console.log(props, 'googleHeatMapProps');
 
+  /**
+   * 获取props数据进行更新地图处理-updateMap({map,heatmap,data,markers})
+   * 联动逻辑变化了再一开始 initMap里面进行处理了。调用接口获取数据进行updateMap
+   */
 
-  
-  // 获取props数据进行更新地图处理
+  const adhocFilters = props.formData.adhocFilters;
 
-  //updateMap({map,heatmap,data,markers})
+  const { skus, platforms, years, latitude, longtitude } =
+    getFilterData(adhocFilters);
 
-  selectedYear = []
-  selectedPlatforms = []
-  selectedSkus = ['A106001MB']
-  const queryData = {selectedYear,selectedPlatforms,selectedSkus}
-  const center = { lat: 38.913611, lng: -77.013222 }
+  // 这里直接赋值不会有引用变化
+  selectedYear = years;
+  selectedPlatforms = platforms;
+  selectedSkus = skus;
+  const queryData = { selectedYear, selectedPlatforms, selectedSkus };
+  const center = { lat: Number(latitude), lng: Number(longtitude) };
 
-  const dataObj = { mapContainer, mapId, queryData,center };
+  const dataObj = { mapContainer, mapId, queryData, center };
 
   // const { height, width, echartOptions, refs, onLegendStateChanged } = props;
 
-  // const url = `https://maps.googleapis.com/maps/api/js?key=${YOUR_API_KEY}&loading=async&libraries=visualization&callback=initMap`;
-
-
-   
-
   loadGoogleMapsScript(url, initMap, dataObj);
-
 
   return (
     <div className="GoogleHeatMap">
