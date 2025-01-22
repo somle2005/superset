@@ -101,6 +101,7 @@ export type Props = Omit<SuperChartCoreProps, 'chartProps'> &
 
 type PropsWithDefault = Props & Readonly<typeof defaultProps>;
 
+// eslint-disable-next-line react-prefer-function-component/react-prefer-function-component
 class SuperChart extends PureComponent<Props, {}> {
   /**
    * SuperChart's core
@@ -195,7 +196,8 @@ class SuperChart extends PureComponent<Props, {}> {
           .every(
             ({ data }) => !data || (Array.isArray(data) && data.length === 0),
           ));
-    if (noResultQueries) {
+    const EMPTY_CAN_RENDER_CHART = ['GoogleHeatMap'];
+    if (noResultQueries && !EMPTY_CAN_RENDER_CHART.includes(chartType)) {
       chart = noResults || (
         <NoResultsComponent
           id={id}
