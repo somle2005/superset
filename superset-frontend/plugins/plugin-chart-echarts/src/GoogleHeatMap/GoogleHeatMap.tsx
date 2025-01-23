@@ -39,6 +39,7 @@ let {
   selectedYears,
   selectedPlatforms,
   selectedSkus,
+  mapKey
 } = initData();
 
 // const testData = () => {
@@ -112,7 +113,7 @@ const getDashBoardsFilters = (dashBoardsFilters: any) => {
     selectFiler[key].data = target;
     filterData[key + 's'] = selectFiler[key];
   }
-  console.log(filterData, 'filterData');
+  // console.log(filterData, 'dashBoardsFilterData');
   return {
     flag,
     filterData,
@@ -153,10 +154,11 @@ export default memo(function EchartsWaterfall(
   const queryData = { selectedYears, selectedPlatforms, selectedSkus };
   const center = { lat: latitudeSave, lng: longtitudeSave };
 
+
  
 
 
-  // Filters筛选栏优先级高于默认图表
+  // DashBoardsFilters筛选栏优先级高于默认图表
   const dashBoardsFiltersMap =  getDashBoardsFilters(props.formData.extraFormData.filters || [])
   const {flag, filterData} = dashBoardsFiltersMap
   // 有数据才会进行覆盖操作
@@ -171,6 +173,7 @@ export default memo(function EchartsWaterfall(
    useEffect(() => {
     loadGoogleMapsScript(url, initMap, dataObj);
    },[])
+
 
 
   return (

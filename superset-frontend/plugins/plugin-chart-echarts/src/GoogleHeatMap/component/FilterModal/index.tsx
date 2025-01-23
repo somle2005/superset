@@ -36,7 +36,7 @@ export default memo(function FilterModal(
   const closeAndUpdateMap = () => {
     handleOk();
     const queryData = {
-      selectedYear: yearsVal,
+      selectedYears: yearsVal,
       selectedPlatforms: platformsVal,
       selectedSkus: skusVal,
     };
