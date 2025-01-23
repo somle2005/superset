@@ -340,6 +340,8 @@ class ChartRenderer extends Component {
           />
         )}
         <div
+          className='SuperChart-content'
+          style={{ height: '100%' }}
           onContextMenu={
             this.state.showContextMenu ? this.onContextMenuFallback : undefined
           }

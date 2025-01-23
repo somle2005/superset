@@ -144,12 +144,17 @@ export async function initMap(dataobj: any) {
       strokeWeight: 1,
     });
   }
+  idleLoadData(queryData)
+}
+
+export function idleLoadData(queryData: any,delay=1000) {
   setTimeout(() => {
     // 浏览器有空闲时间才进行执行
     selectedSkus = queryData.selectedSkus
     idleExcute(() => loadData(queryData));
-  }, 1000);
+  }, delay);
 }
+
 
 export function loadGoogleMapsScript(
   url: string,
@@ -305,3 +310,4 @@ export async function loadData(query: {
     console.error('获取数据时出错:', error);
   }
 }
+

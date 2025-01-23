@@ -16,9 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { useRef } from 'react';
+
+import { useRef, memo } from 'react';
+// @ts-ignore
+import styles from './style/index.module.less';
+// import './style/index.css';
 import { WaterfallChartTransformedProps } from './types';
-import { initData, initMap, loadGoogleMapsScript } from './utils';
+import { initData, initMap, loadGoogleMapsScript, idleLoadData } from './utils';
+import FilterModal from './component/FilterModal';
 
 /* eslint-disable */
 
@@ -44,6 +49,9 @@ let {
 
 //   const dataObj = { mapContainer, mapId, queryData, center };
 // }
+
+let latitudeSave = 38.913611;
+let longtitudeSave = -77.013222;
 
 const getFilterData = (adhocFilters: any) => {
   const latitude =
@@ -74,10 +82,11 @@ const getFilterData = (adhocFilters: any) => {
   return filterData;
 };
 
-export default function EchartsWaterfall(
+export default memo(function EchartsWaterfall(
   props: WaterfallChartTransformedProps,
 ) {
   const mapContainer = useRef(null);
+  console.log(props, 'googleHeatMapProps-重复渲染了');
 
   // console.log(props, 'googleHeatMapProps');
 
@@ -85,6 +94,8 @@ export default function EchartsWaterfall(
    * 获取props数据进行更新地图处理-updateMap({map,heatmap,data,markers})
    * 联动逻辑变化了再一开始 initMap里面进行处理了。调用接口获取数据进行updateMap
    */
+
+  // const { height, width, echartOptions, refs, onLegendStateChanged } = props;
 
   const adhocFilters = props.formData.adhocFilters;
 
@@ -95,22 +106,27 @@ export default function EchartsWaterfall(
   selectedYear = years;
   selectedPlatforms = platforms;
   selectedSkus = skus;
+  latitudeSave = Number(latitude);
+  longtitudeSave = Number(longtitude);
+
   const queryData = { selectedYear, selectedPlatforms, selectedSkus };
-  const center = { lat: Number(latitude), lng: Number(longtitude) };
+  const center = { lat: latitudeSave, lng: longtitudeSave };
 
   const dataObj = { mapContainer, mapId, queryData, center };
 
-  // const { height, width, echartOptions, refs, onLegendStateChanged } = props;
-
   loadGoogleMapsScript(url, initMap, dataObj);
 
+
   return (
-    <div className="GoogleHeatMap">
+    <div className={`GoogleHeatMap ${styles.GoogleHeatMap}`}>
+      <FilterModal idleLoadData={idleLoadData}  />
       <div
         id="map"
         ref={mapContainer}
-        style={{ width: '100%', height: '100vh' }}
+        style={{ width: '100%', height: '100%' }}
+        // style={{ width: '100%', height: 'calc(100vh - 40px)' }}
       ></div>
+      {/* 筛选项 */}
     </div>
   );
-}
+});
