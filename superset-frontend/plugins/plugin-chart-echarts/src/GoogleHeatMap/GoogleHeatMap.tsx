@@ -17,13 +17,14 @@
  * under the License.
  */
 
-import { useRef, memo } from 'react';
+import { useRef, memo, useEffect } from 'react';
 // @ts-ignore
 import styles from './style/index.module.less';
 // import './style/index.css';
 import { WaterfallChartTransformedProps } from './types';
 import { initData, initMap, loadGoogleMapsScript, idleLoadData } from './utils';
 import FilterModal from './component/FilterModal';
+import GoogleMap from './component/GoogleMap';
 
 /* eslint-disable */
 
@@ -85,6 +86,9 @@ const getFilterData = (adhocFilters: any) => {
 export default memo(function EchartsWaterfall(
   props: WaterfallChartTransformedProps,
 ) {
+
+ 
+
   const mapContainer = useRef(null);
   console.log(props, 'googleHeatMapProps-重复渲染了');
 
@@ -114,18 +118,21 @@ export default memo(function EchartsWaterfall(
 
   const dataObj = { mapContainer, mapId, queryData, center };
 
-  loadGoogleMapsScript(url, initMap, dataObj);
+   useEffect(() => {
+    loadGoogleMapsScript(url, initMap, dataObj);
+   },[])
 
 
   return (
     <div className={`GoogleHeatMap ${styles.GoogleHeatMap}`}>
       <FilterModal idleLoadData={idleLoadData}  />
-      <div
+      <GoogleMap ref={mapContainer} />
+      {/* <div
         id="map"
         ref={mapContainer}
         style={{ width: '100%', height: '100%' }}
         // style={{ width: '100%', height: 'calc(100vh - 40px)' }}
-      ></div>
+      ></div> */}
       {/* 筛选项 */}
     </div>
   );
