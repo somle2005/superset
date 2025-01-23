@@ -36,7 +36,7 @@ let {
   map,
   heatmap,
   markers,
-  selectedYear,
+  selectedYears,
   selectedPlatforms,
   selectedSkus,
 } = initData();
@@ -83,6 +83,43 @@ const getFilterData = (adhocFilters: any) => {
   return filterData;
 };
 
+const getDashBoardsFilters = (dashBoardsFilters: any) => {
+  let flag = false
+  // 带上flag标记是为了确认dashBoardFilters到底有没有这个筛选。没有就不能对原有筛选进行覆盖
+  const selectFiler: any = {
+    platform: {
+      flag: false,
+      data:[]
+    },
+    sku: {
+      flag: false,
+      data:[]
+    },
+    year: {
+      flag: false,
+      data:[]
+    },
+  };
+  const filterData: any = {};
+  for (const key in selectFiler) {
+    let target =  dashBoardsFilters.find((item: any) => item.col === key)?.val
+    if(target){
+      selectFiler[key].flag = true;
+      flag = true
+    } else {
+      target = []
+    }
+    selectFiler[key].data = target;
+    filterData[key + 's'] = selectFiler[key];
+  }
+  console.log(filterData, 'filterData');
+  return {
+    flag,
+    filterData,
+  };
+
+}
+
 export default memo(function EchartsWaterfall(
   props: WaterfallChartTransformedProps,
 ) {
@@ -107,15 +144,28 @@ export default memo(function EchartsWaterfall(
     getFilterData(adhocFilters);
 
   // 这里直接赋值不会有引用变化
-  selectedYear = years;
+  selectedYears = years;
   selectedPlatforms = platforms;
   selectedSkus = skus;
   latitudeSave = Number(latitude);
   longtitudeSave = Number(longtitude);
 
-  const queryData = { selectedYear, selectedPlatforms, selectedSkus };
+  const queryData = { selectedYears, selectedPlatforms, selectedSkus };
   const center = { lat: latitudeSave, lng: longtitudeSave };
 
+ 
+
+
+  // Filters筛选栏优先级高于默认图表
+  const dashBoardsFiltersMap =  getDashBoardsFilters(props.formData.extraFormData.filters || [])
+  const {flag, filterData} = dashBoardsFiltersMap
+  // 有数据才会进行覆盖操作
+  if(flag){
+    queryData.selectedYears = filterData.years.flag ? filterData.years.data : queryData.selectedYears
+    queryData.selectedPlatforms = filterData.platforms.flag? filterData.platforms.data : queryData.selectedPlatforms
+    queryData.selectedSkus = filterData.skus.flag ? filterData.skus.data : queryData.selectedSkus
+  }
+ 
   const dataObj = { mapContainer, mapId, queryData, center };
 
    useEffect(() => {

@@ -69,7 +69,7 @@ const years: string[] = [];
 const platforms: string[] = [];
 const skus: string[] = [];
 
-const selectedYear: string[] = [];
+const selectedYears: string[] = [];
 const selectedPlatforms: string[] = [];
 let selectedSkus: string[] = [];
 
@@ -107,7 +107,7 @@ export const initData = () => ({
   map,
   heatmap,
   markers,
-  selectedYear,
+  selectedYears,
   selectedPlatforms,
   selectedSkus,
 });
@@ -287,12 +287,12 @@ export function updateMap(updateMapData: {
   updateMarkers(data, markers);
 }
 export async function loadData(query: {
-  selectedYear: any[];
+  selectedYears: any[];
   selectedPlatforms: any[];
   selectedSkus: any[];
 }) {
-  const { selectedYear, selectedPlatforms, selectedSkus } = query;
-  const apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYear.join(
+  const { selectedYears, selectedPlatforms, selectedSkus } = query;
+  const apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYears.join(
     ',',
   )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}`;
   try {
