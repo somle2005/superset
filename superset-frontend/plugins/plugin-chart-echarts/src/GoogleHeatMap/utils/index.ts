@@ -317,7 +317,7 @@ function checkQueryColorLimit(query: any) {
     }
   });
 
-  const limit = 10;
+  const limit = colorPalette.length;
 
   for (let key in map) {
     if (map[key].data.length > limit) {
