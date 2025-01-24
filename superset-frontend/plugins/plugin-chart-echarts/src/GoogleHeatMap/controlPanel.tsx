@@ -36,8 +36,8 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         [spatial, null],
-        ['x_axis'],
-        ['time_grain_sqla'],
+        // ['x_axis'],
+        // ['time_grain_sqla'],
         ['groupby'],
         // ['metric'],
         ['adhoc_filters'],
