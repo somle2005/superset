@@ -33,10 +33,18 @@ import { getTemporalColumns } from '../utils';
 
 const getAxisLabel = (
   formData: QueryFormData,
-): Record<'label' | 'description', string> =>
-  formData?.orientation === 'horizontal'
+): Record<'label' | 'description', string> => {
+  if (formData.viz_type === 'GoogleHeatMap') {
+    return {
+      label: t('enableMap'),
+      description: t('Choose any column only to enable map query function'),
+    };
+  }
+
+  return formData?.orientation === 'horizontal'
     ? { label: t('Y-axis'), description: t('Dimension to use on y-axis.') }
     : { label: t('X-axis'), description: t('Dimension to use on x-axis.') };
+};
 
 export const xAxisMixin = {
   label: (state: ControlPanelState) => getAxisLabel(state?.form_data).label,
