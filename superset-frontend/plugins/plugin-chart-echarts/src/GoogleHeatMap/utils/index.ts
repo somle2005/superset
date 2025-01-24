@@ -25,6 +25,9 @@ data有数据坐标 开始循环
 调用 fetchStreetView 获取街景
  */
 
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { message } from 'antd';
+
 const createIdleExcute = () => {
   const idleCallbackFn = (task: () => void) => {
     window.requestIdleCallback(deadline => {
@@ -90,6 +93,7 @@ const shareParams = {
   latitudeKey: 'latitude',
   longtitudeKey: 'longtitude',
   rowLimit: 100,
+  colorColumns: [],
 };
 
 const colorPalette = [
@@ -104,6 +108,7 @@ const colorPalette = [
   '#A733FF',
   '#33FF9C',
 ]; // 10 distinct colors for SKUs
+const colorTypeSortList: string[] = [];
 
 export const initData = () => ({
   imageCache,
@@ -133,7 +138,7 @@ export async function initMap(dataobj: any) {
   map = new Map(mapContainer.current, {
     zoom: 6,
     // center: { lat: 38.913611, lng: -77.013222 },
-    center: center,
+    center,
     mapId,
   });
 
@@ -181,9 +186,12 @@ export function loadGoogleMapsScript(
   document.head.appendChild(script);
 }
 
-function getColorForSku(sku: string): string {
-  const skuIndex = selectedSkus.indexOf(sku);
-  return colorPalette[skuIndex % colorPalette.length]; // Rotate through the colors
+function getColor(row: any): string {
+  if(shareParams.colorColumns.length === 0) return colorPalette[0];
+  // const skuIndex = selectedSkus.indexOf(sku);
+  // 多个颜色组合是可能超过10条的
+  const index = colorTypeSortList.indexOf(row.colorTypeFlag);
+  return colorPalette[index % colorPalette.length]; // Rotate through the colors
 }
 
 function updateHeatmap(data: any[], map: any, heatmap: any) {
@@ -254,7 +262,7 @@ function updateMarkers(data: any[], markers: any[]) {
 
   data.forEach(row => {
     if (row.latitude && row.longtitude) {
-      const color = getColorForSku(row.sku);
+      const color = getColor(row);
       const marker = createMarker(row, color);
       marker.content.addEventListener('click', async () => {
         const streetViewUrl = await fetchStreetView(
@@ -282,6 +290,46 @@ function updateMarkers(data: any[], markers: any[]) {
   });
 }
 
+function checkQueryColorLimit(query: any) {
+  let flag = true;
+  const colorColumns = shareParams.colorColumns;
+  if (colorColumns.length === 0) return flag;
+
+  // 检查如果colorColumns有这个颜色分类项，则判断是否超过限制10个
+  const map: any = {
+    sku: {
+      data: [],
+      key: 'selectedSkus',
+    },
+    year: {
+      data: [],
+      key: 'selectedYears',
+    },
+    platform: {
+      data: [],
+      key: 'selectedPlatforms',
+    },
+  };
+
+  colorColumns.forEach((item: string) => {
+    if (map[item]) {
+      map[item].data = query[map[item].key];
+    }
+  });
+
+  const limit = 10;
+
+  for (let key in map) {
+    if (map[key].data.length > limit) {
+      message.error(`颜色分类项${key} 最多只能选择${limit}个`);
+      flag = false;
+      break;
+    }
+  }
+
+  return flag;
+}
+
 export function updateMap(updateMapData: {
   map: any;
   heatmap: any;
@@ -292,11 +340,36 @@ export function updateMap(updateMapData: {
   updateHeatmap(map, heatmap, data);
   updateMarkers(data, markers);
 }
+function addColorTypeFlag(data: any[]) {
+  const colorColumns = shareParams.colorColumns;
+
+  const concatStr = (item: any) => {
+    let str = '';
+    colorColumns.forEach((key: string) => {
+      if(item[key]) {
+        str += `${item[key]}_`;
+      }
+    });
+    return str;
+  };
+  if (colorColumns.length === 0) return data;
+  return data.map(item => {
+    item.colorTypeFlag = concatStr(item);
+    if (item.colorTypeFlag && !colorTypeSortList.includes(item.colorTypeFlag)) {
+      colorTypeSortList.push(item.colorTypeFlag);
+    }
+    return item;
+  });
+}
 export async function loadData(query: {
   selectedYears: any[];
   selectedPlatforms: any[];
   selectedSkus: any[];
 }) {
+  if (!checkQueryColorLimit(query)) {
+    return;
+  }
+
   const { selectedYears, selectedPlatforms, selectedSkus } = query;
   const apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYears.join(
     ',',
@@ -304,7 +377,7 @@ export async function loadData(query: {
   try {
     const response = await fetch(apiUrl);
     const allData = await response.json();
-    const data = allData.slice(0, shareParams.rowLimit);
+    const data = addColorTypeFlag(allData.slice(0, shareParams.rowLimit));
     if (Array.isArray(data)) {
       data.forEach(row => {
         row.latitude = row[shareParams.latitudeKey];

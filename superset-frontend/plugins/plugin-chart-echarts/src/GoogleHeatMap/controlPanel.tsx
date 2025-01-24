@@ -37,16 +37,16 @@ const config: ControlPanelConfig = {
       controlSetRows: [
         [spatial, null],
         ['x_axis'],
-        // [
-        //   {
-        //     name: 'groupbyColumns',
-        //     config: {
-        //       ...sharedControls.groupby,
-        //       label: t('Columns'),
-        //       description: t('Columns to group by on the columns'),
-        //     },
-        //   },
-        // ],
+        [
+          {
+            name: 'groupbyColumns',
+            config: {
+              ...sharedControls.groupby,
+              label: t('ColorColumns'),
+              description: t('ColorColumns to group by on the columns'),
+            },
+          },
+        ],
         // ['time_grain_sqla'],
         // ['groupby'],
         // ['metric'],

@@ -186,6 +186,12 @@ export default memo(function EchartsWaterfall(
     dataObj.queryData.selectedYears = ['2024', '2025', '2026', '2027'];
   }
 
+  const colorColumns = props.formData.groupbyColumns || [];
+  if(colorColumns.length) {
+    shareParams.colorColumns = colorColumns
+  }
+
+
 
   useEffect(() => {
     loadGoogleMapsScript(url, initMap, dataObj);
