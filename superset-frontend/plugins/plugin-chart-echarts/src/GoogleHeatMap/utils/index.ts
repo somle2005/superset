@@ -86,9 +86,10 @@ const mapId = 'YOUR_MAP_ID';
 const YOUR_API_KEY = 'AIzaSyA4vbd4g988J5ylXA_AsdonSRHvHtSAyPc';
 const url = `https://maps.googleapis.com/maps/api/js?key=${YOUR_API_KEY}&libraries=visualization`; // No callback
 
-const mapKey = {
+const shareParams = {
   latitudeKey: 'latitude',
   longtitudeKey: 'longtitude',
+  rowLimit: 100,
 };
 
 const colorPalette = [
@@ -115,7 +116,7 @@ export const initData = () => ({
   selectedYears,
   selectedPlatforms,
   selectedSkus,
-  mapKey,
+  shareParams,
 });
 
 /* eslint-disable */
@@ -191,7 +192,6 @@ function updateHeatmap(data: any[], map: any, heatmap: any) {
   const points = data
     .filter(row => row.latitude && row.longtitude)
     .map(row => new google.maps.LatLng(row.latitude, row.longtitude));
-
 
   if (heatmap) heatmap.setMap(null);
 
@@ -303,12 +303,13 @@ export async function loadData(query: {
   )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}`;
   try {
     const response = await fetch(apiUrl);
-    const data = await response.json();
+    const allData = await response.json();
+    const data = allData.slice(0, shareParams.rowLimit);
     if (Array.isArray(data)) {
       data.forEach(row => {
-        row.latitude = row[mapKey.latitudeKey]
-        row.longtitude = row[mapKey.longtitudeKey]
-      })
+        row.latitude = row[shareParams.latitudeKey];
+        row.longtitude = row[shareParams.longtitudeKey];
+      });
       updateMap({
         map,
         heatmap,

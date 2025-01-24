@@ -39,7 +39,7 @@ let {
   selectedYears,
   selectedPlatforms,
   selectedSkus,
-  mapKey
+  shareParams,
 } = initData();
 
 // const testData = () => {
@@ -85,30 +85,30 @@ const getFilterData = (adhocFilters: any) => {
 };
 
 const getDashBoardsFilters = (dashBoardsFilters: any) => {
-  let flag = false
+  let flag = false;
   // 带上flag标记是为了确认dashBoardFilters到底有没有这个筛选。没有就不能对原有筛选进行覆盖
   const selectFiler: any = {
     platform: {
       flag: false,
-      data:[]
+      data: [],
     },
     sku: {
       flag: false,
-      data:[]
+      data: [],
     },
     year: {
       flag: false,
-      data:[]
+      data: [],
     },
   };
   const filterData: any = {};
   for (const key in selectFiler) {
-    let target =  dashBoardsFilters.find((item: any) => item.col === key)?.val
-    if(target){
+    let target = dashBoardsFilters.find((item: any) => item.col === key)?.val;
+    if (target) {
       selectFiler[key].flag = true;
-      flag = true
+      flag = true;
     } else {
-      target = []
+      target = [];
     }
     selectFiler[key].data = target;
     filterData[key + 's'] = selectFiler[key];
@@ -118,17 +118,13 @@ const getDashBoardsFilters = (dashBoardsFilters: any) => {
     flag,
     filterData,
   };
-
-}
+};
 
 export default memo(function EchartsWaterfall(
   props: WaterfallChartTransformedProps,
 ) {
-
- 
-
   const mapContainer = useRef(null);
-  console.log(props, 'googleHeatMapProps-重复渲染了');
+  console.log(props, 'googleHeatMapProps-初始渲染了');
 
   // console.log(props, 'googleHeatMapProps');
 
@@ -154,31 +150,50 @@ export default memo(function EchartsWaterfall(
   const queryData = { selectedYears, selectedPlatforms, selectedSkus };
   const center = { lat: latitudeSave, lng: longtitudeSave };
 
-
- 
-
-
   // DashBoardsFilters筛选栏优先级高于默认图表
-  const dashBoardsFiltersMap =  getDashBoardsFilters(props.formData.extraFormData.filters || [])
-  const {flag, filterData} = dashBoardsFiltersMap
+  const dashBoardsFiltersMap = getDashBoardsFilters(
+    props.formData.extraFormData.filters || [],
+  );
+  const { flag, filterData } = dashBoardsFiltersMap;
   // 有数据才会进行覆盖操作
-  if(flag){
-    queryData.selectedYears = filterData.years.flag ? filterData.years.data : queryData.selectedYears
-    queryData.selectedPlatforms = filterData.platforms.flag? filterData.platforms.data : queryData.selectedPlatforms
-    queryData.selectedSkus = filterData.skus.flag ? filterData.skus.data : queryData.selectedSkus
+  if (flag) {
+    queryData.selectedYears = filterData.years.flag
+      ? filterData.years.data
+      : queryData.selectedYears;
+    queryData.selectedPlatforms = filterData.platforms.flag
+      ? filterData.platforms.data
+      : queryData.selectedPlatforms;
+    queryData.selectedSkus = filterData.skus.flag
+      ? filterData.skus.data
+      : queryData.selectedSkus;
   }
- 
+
   const dataObj = { mapContainer, mapId, queryData, center };
 
-   useEffect(() => {
+  const spatial = props.formData.spatial;
+
+  if (spatial) {
+    shareParams.latitudeKey = spatial.latCol;
+    shareParams.longtitudeKey = spatial.lonCol;
+  }
+  const rowLimit = props.formData.rowLimit;
+  if (rowLimit) {
+    shareParams.rowLimit = rowLimit;
+  }
+
+
+  if (dataObj.queryData.selectedYears.length === 0) {
+    dataObj.queryData.selectedYears = ['2024', '2025', '2026', '2027'];
+  }
+
+
+  useEffect(() => {
     loadGoogleMapsScript(url, initMap, dataObj);
-   },[])
-
-
+  }, []);
 
   return (
     <div className={`GoogleHeatMap ${styles.GoogleHeatMap}`}>
-      <FilterModal idleLoadData={idleLoadData}  />
+      <FilterModal idleLoadData={idleLoadData} />
       <GoogleMap ref={mapContainer} />
       {/* <div
         id="map"

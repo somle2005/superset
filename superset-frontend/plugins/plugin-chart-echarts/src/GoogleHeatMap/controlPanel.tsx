@@ -26,6 +26,8 @@ import {
   sharedControls,
 } from '@superset-ui/chart-controls';
 import { showValueControl } from '../controls';
+import { spatial } from '../../../legacy-preset-chart-deckgl/src/utilities/Shared_DeckGL';
+// superset-frontend\plugins\legacy-preset-chart-deckgl\src\utilities\Shared_DeckGL.jsx
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -33,10 +35,11 @@ const config: ControlPanelConfig = {
       label: t('Query'),
       expanded: true,
       controlSetRows: [
+        [spatial, null],
         ['x_axis'],
         ['time_grain_sqla'],
         ['groupby'],
-        ['metric'],
+        // ['metric'],
         ['adhoc_filters'],
         ['row_limit'],
       ],
