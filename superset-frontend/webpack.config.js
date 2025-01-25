@@ -548,7 +548,7 @@ let proxyConfig = getProxyConfig();
 if (isDevMode) {
   
   // target: 'http://localhost:8088',
-  console.log('有进来这里', proxyConfig)
+  // console.log('有进来这里', proxyConfig)
   //
   //proxyConfig.target = 'http://192.168.10.199:8088'
 
@@ -623,5 +623,5 @@ const configFinal = smp.wrap(config);
 
 // configFinal.devServer.host = '192.168.10.199'
 // configFinal.devServer.host = 'localhost'
-console.log('configFinal', configFinal.devServer)
+// console.log('configFinal', configFinal.devServer)
 module.exports = configFinal
