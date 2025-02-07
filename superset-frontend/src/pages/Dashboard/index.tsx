@@ -29,11 +29,12 @@ const hiddenHeaders = () => {
     );
     if (dom) {
       dom.style.display = 'none';
+      console.log('隐藏表头', dom);
     }
-    if(container) {
+    if (container) {
       container.style.display = 'none';
+      console.log('隐藏表头-container', container);
     }
-    console.log('隐藏表头', dom);
   }
   console.log('进入dashBoard了');
 };
