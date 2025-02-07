@@ -20,7 +20,26 @@ import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { DashboardPage } from 'src/dashboard/containers/DashboardPage';
 
+const hiddenHeaders = () => {
+  const hiddenFlag = window.location.search.indexOf('hiddenDashboards') !== -1;
+  if (hiddenFlag) {
+    const dom: any = document.querySelector('header#main-menu');
+    const container: any = document.querySelector(
+      '.dashboard-header-container',
+    );
+    if (dom) {
+      dom.style.display = 'none';
+    }
+    if(container) {
+      container.style.display = 'none';
+    }
+    console.log('隐藏表头', dom);
+  }
+  console.log('进入dashBoard了');
+};
+
 const DashboardRoute: FC = () => {
+  hiddenHeaders();
   const { idOrSlug } = useParams<{ idOrSlug: string }>();
   return <DashboardPage idOrSlug={idOrSlug} />;
 };
