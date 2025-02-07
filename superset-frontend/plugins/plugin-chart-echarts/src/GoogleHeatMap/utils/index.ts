@@ -365,15 +365,16 @@ export async function loadData(query: {
   selectedYears: any[];
   selectedPlatforms: any[];
   selectedSkus: any[];
+  rowLimit: any;
 }) {
   if (!checkQueryColorLimit(query)) {
     return;
   }
 
-  const { selectedYears, selectedPlatforms, selectedSkus } = query;
+  const { selectedYears, selectedPlatforms, selectedSkus, rowLimit } = query;
   const apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYears.join(
     ',',
-  )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}`;
+  )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}&rowLimit=${rowLimit}`;
   try {
     const response = await fetch(apiUrl);
     const allData = await response.json();

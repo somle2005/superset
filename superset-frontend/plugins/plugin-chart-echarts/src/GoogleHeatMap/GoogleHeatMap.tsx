@@ -147,7 +147,7 @@ export default memo(function EchartsWaterfall(
   latitudeSave = Number(latitude);
   longtitudeSave = Number(longtitude);
 
-  const queryData = { selectedYears, selectedPlatforms, selectedSkus };
+  const queryData = { selectedYears, selectedPlatforms, selectedSkus,rowLimit:undefined };
   const center = { lat: latitudeSave, lng: longtitudeSave };
 
   // DashBoardsFilters筛选栏优先级高于默认图表
@@ -179,6 +179,7 @@ export default memo(function EchartsWaterfall(
   const rowLimit = props.formData.rowLimit;
   if (rowLimit) {
     shareParams.rowLimit = rowLimit;
+    dataObj.queryData.rowLimit = rowLimit;
   }
 
 
