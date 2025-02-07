@@ -1,6 +1,6 @@
 import { memo } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Form, Modal, Select } from 'antd-v5';
+import { Form, InputNumber, Modal, Select } from 'antd-v5';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { FilterOutlined } from '@ant-design/icons';
 // @ts-ignore
@@ -10,14 +10,8 @@ import { useFilterSelect } from '../../hooks/filterSelect';
 
 /* eslint-disable */
 
-
-
-export default memo(function FilterModal(
-  props: any,
-) {
-
+export default memo(function FilterModal(props: any) {
   console.log(props, 'modal-重复渲染了');
-
 
   const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
 
@@ -31,6 +25,8 @@ export default memo(function FilterModal(
     setSkusVal,
     yearsVal,
     setYearsVal,
+    rowLimit,
+    setRowLimit,
   } = useFilterSelect();
 
   const closeAndUpdateMap = () => {
@@ -39,11 +35,14 @@ export default memo(function FilterModal(
       selectedYears: yearsVal,
       selectedPlatforms: platformsVal,
       selectedSkus: skusVal,
+      rowLimit:rowLimit,
     };
-    const {idleLoadData} = props;
+    const { idleLoadData } = props;
     idleLoadData(queryData, 10);
     console.log('queryData', queryData);
   };
+
+
 
   return (
     <>
@@ -117,6 +116,10 @@ export default memo(function FilterModal(
                 );
               })}
             </Select>
+          </Form.Item>
+
+          <Form.Item label="rowLimit">
+            <InputNumber min="1"  value={rowLimit} onChange={setRowLimit} />
           </Form.Item>
         </Form>
       </Modal>

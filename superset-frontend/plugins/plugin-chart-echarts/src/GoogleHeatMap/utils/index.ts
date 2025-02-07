@@ -374,7 +374,7 @@ export async function loadData(query: {
   const { selectedYears, selectedPlatforms, selectedSkus, rowLimit } = query;
   const apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYears.join(
     ',',
-  )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}&rowLimit=${rowLimit}`;
+  )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}&rowLimit=${rowLimit||''}`;
   try {
     const response = await fetch(apiUrl);
     const allData = await response.json();

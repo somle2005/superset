@@ -12,6 +12,7 @@ export function useFilterSelect() {
   const [platformsVal, setPlatformsVal] = useState<any>([]);
   const [skusVal, setSkusVal] = useState<any>([]);
   const [yearsVal, setYearsVal] = useState<any>([]);
+  const [rowLimit, setRowLimit] = useState<any>();
 
   useEffect(() => {
     loadOptions()
@@ -38,5 +39,7 @@ export function useFilterSelect() {
     setSkusVal,
     yearsVal,
     setYearsVal,
+    rowLimit,
+    setRowLimit,
   };
 }
