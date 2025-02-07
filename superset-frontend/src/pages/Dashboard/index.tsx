@@ -38,7 +38,7 @@ const hiddenHeaders = () => {
         container.style.display = 'none';
         console.log('隐藏表头-container', container);
       }
-    }, 3000);
+    }, 1000);
   }
   console.log('进入dashBoard了');
 };
