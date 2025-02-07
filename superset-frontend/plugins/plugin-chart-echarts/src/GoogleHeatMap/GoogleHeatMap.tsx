@@ -184,7 +184,7 @@ export default memo(function EchartsWaterfall(
 
 
   if (dataObj.queryData.selectedYears.length === 0) {
-    dataObj.queryData.selectedYears = ['2024', '2025', '2026', '2027'];
+    dataObj.queryData.selectedYears = ['2024', '2025', '2026', '2027','2028'];
   }
 
   const colorColumns = props.formData.groupbyColumns || [];

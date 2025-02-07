@@ -108,7 +108,7 @@ const colorPalette = [
   '#A733FF',
   '#33FF9C',
 ]; // 10 distinct colors for SKUs
-const colorTypeSortList: string[] = [];
+let colorTypeSortList: string[] = [];
 
 export const initData = () => ({
   imageCache,
@@ -191,6 +191,7 @@ function getColor(row: any): string {
   // const skuIndex = selectedSkus.indexOf(sku);
   // 多个颜色组合是可能超过10条的
   const index = colorTypeSortList.indexOf(row.colorTypeFlag);
+  if(index===-1) return colorPalette[0];
   return colorPalette[index % colorPalette.length]; // Rotate through the colors
 }
 
@@ -353,6 +354,7 @@ function addColorTypeFlag(data: any[]) {
     return str;
   };
   if (colorColumns.length === 0) return data;
+  colorTypeSortList = []
   return data.map(item => {
     item.colorTypeFlag = concatStr(item);
     if (item.colorTypeFlag && !colorTypeSortList.includes(item.colorTypeFlag)) {
@@ -371,14 +373,19 @@ export async function loadData(query: {
     return;
   }
 
-  const { selectedYears, selectedPlatforms, selectedSkus, rowLimit } = query;
+  let { selectedYears, selectedPlatforms, selectedSkus, rowLimit } = query;
+
+  if(!selectedYears?.length) {
+    selectedYears = ['2024', '2025', '2026', '2027','2028'];
+  }
   const apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYears.join(
     ',',
   )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}&rowLimit=${rowLimit||100}`;
   try {
     const response = await fetch(apiUrl);
     const allData = await response.json();
-    const data = addColorTypeFlag(allData.slice(0, shareParams.rowLimit));
+    // const data = addColorTypeFlag(allData.slice(0, shareParams.rowLimit));
+    const data = addColorTypeFlag(allData);
     if (Array.isArray(data)) {
       data.forEach(row => {
         row.latitude = row[shareParams.latitudeKey];
@@ -395,3 +402,6 @@ export async function loadData(query: {
     console.error('获取数据时出错:', error);
   }
 }
+
+
+
