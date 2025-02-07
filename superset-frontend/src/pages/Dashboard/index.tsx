@@ -24,17 +24,21 @@ const hiddenHeaders = () => {
   const hiddenFlag = window.location.search.indexOf('hiddenDashboards') !== -1;
   if (hiddenFlag) {
     const dom: any = document.querySelector('header#main-menu');
-    const container: any = document.querySelector(
-      '.dashboard-header-container',
-    );
     if (dom) {
       dom.style.display = 'none';
       console.log('隐藏表头', dom);
     }
-    if (container) {
-      container.style.display = 'none';
-      console.log('隐藏表头-container', container);
-    }
+
+    setTimeout(() => {
+      const container: any = document.querySelector(
+        '.dashboard-header-container',
+      );
+      console.log(container, '是否存在container表头');
+      if (container) {
+        container.style.display = 'none';
+        console.log('隐藏表头-container', container);
+      }
+    }, 3000);
   }
   console.log('进入dashBoard了');
 };
