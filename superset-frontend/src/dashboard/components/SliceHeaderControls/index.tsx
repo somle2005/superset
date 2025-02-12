@@ -294,6 +294,8 @@ const SliceHeaderControls = (props: SliceHeaderControlsProps) => {
     openKeysProps.openKeys = openKeys;
   }
 
+  const hiddenFlag = window.location.search.indexOf('hiddenDashboards') !== -1;
+
   const menu = (
     <Menu
       onClick={handleMenuClick}
@@ -330,7 +332,7 @@ const SliceHeaderControls = (props: SliceHeaderControlsProps) => {
         </Menu.Item>
       )}
 
-      {canExplore && (
+      {!hiddenFlag && canExplore && (
         <Menu.Item key={MenuKeys.ExploreChart}>
           <Tooltip title={getSliceHeaderTooltip(props.slice.slice_name)}>
             {t('Edit chart')}
@@ -346,7 +348,7 @@ const SliceHeaderControls = (props: SliceHeaderControlsProps) => {
 
       {(canExplore || canEditCrossFilters) && <Menu.Divider />}
 
-      {(canExplore || canViewQuery) && (
+      {!hiddenFlag && (canExplore || canViewQuery) && (
         <Menu.Item key={MenuKeys.ViewQuery}>
           <ModalTrigger
             triggerNode={
@@ -362,7 +364,7 @@ const SliceHeaderControls = (props: SliceHeaderControlsProps) => {
         </Menu.Item>
       )}
 
-      {(canExplore || canViewTable) && (
+      {!hiddenFlag && (canExplore || canViewTable) && (
         <Menu.Item key={MenuKeys.ViewResults}>
           <ViewResultsModalTrigger
             canExplore={props.supersetCanExplore}
@@ -387,20 +389,22 @@ const SliceHeaderControls = (props: SliceHeaderControlsProps) => {
         </Menu.Item>
       )}
 
-      {isFeatureEnabled(FeatureFlag.DrillToDetail) && canDrillToDetail && (
-        <DrillDetailMenuItems
-          chartId={slice.slice_id}
-          formData={props.formData}
-          key={MenuKeys.DrillToDetail}
-          showModal={drillModalIsOpen}
-          setShowModal={setDrillModalIsOpen}
-          drillToDetailMenuRef={drillToDetailMenuRef}
-        />
-      )}
+      {!hiddenFlag &&
+        isFeatureEnabled(FeatureFlag.DrillToDetail) &&
+        canDrillToDetail && (
+          <DrillDetailMenuItems
+            chartId={slice.slice_id}
+            formData={props.formData}
+            key={MenuKeys.DrillToDetail}
+            showModal={drillModalIsOpen}
+            setShowModal={setDrillModalIsOpen}
+            drillToDetailMenuRef={drillToDetailMenuRef}
+          />
+        )}
 
       {(slice.description || canExplore) && <Menu.Divider />}
 
-      {supersetCanShare && (
+      {!hiddenFlag && supersetCanShare && (
         <Menu.SubMenu
           title={t('Share')}
           key={MenuKeys.Share}
