@@ -187,11 +187,11 @@ export function loadGoogleMapsScript(
 }
 
 function getColor(row: any): string {
-  if(shareParams.colorColumns.length === 0) return colorPalette[0];
+  if (shareParams.colorColumns.length === 0) return colorPalette[0];
   // const skuIndex = selectedSkus.indexOf(sku);
   // 多个颜色组合是可能超过10条的
   const index = colorTypeSortList.indexOf(row.colorTypeFlag);
-  if(index===-1) return colorPalette[0];
+  if (index === -1) return colorPalette[0];
   return colorPalette[index % colorPalette.length]; // Rotate through the colors
 }
 
@@ -260,7 +260,7 @@ function updateMarkers(data: any[], markers: any[]) {
   markers = [];
 
   const infoWindow = new google.maps.InfoWindow();
-
+  console.log(data,'data')
   data.forEach(row => {
     if (row.latitude && row.longtitude) {
       const color = getColor(row);
@@ -273,6 +273,7 @@ function updateMarkers(data: any[], markers: any[]) {
         if (streetViewUrl) {
           infoWindow.setContent(`
               <div>
+                <p>订单号: ${row.order_code}</p>
                 <p>买家名称: ${row.buyer_name}</p>
                 <p>国家名称: ${row.country_code}</p>
                 <p>城市名称: ${row.city_name}</p>
@@ -347,14 +348,14 @@ function addColorTypeFlag(data: any[]) {
   const concatStr = (item: any) => {
     let str = '';
     colorColumns.forEach((key: string) => {
-      if(item[key]) {
+      if (item[key]) {
         str += `${item[key]}_`;
       }
     });
     return str;
   };
   if (colorColumns.length === 0) return data;
-  colorTypeSortList = []
+  colorTypeSortList = [];
   return data.map(item => {
     item.colorTypeFlag = concatStr(item);
     if (item.colorTypeFlag && !colorTypeSortList.includes(item.colorTypeFlag)) {
@@ -368,21 +369,61 @@ export async function loadData(query: {
   selectedPlatforms: any[];
   selectedSkus: any[];
   rowLimit: any;
+  order_codes: string[];
+  name_zhs: string[];
+  months: string[];
 }) {
   if (!checkQueryColorLimit(query)) {
     return;
   }
 
-  let { selectedYears, selectedPlatforms, selectedSkus, rowLimit } = query;
+  let {
+    selectedYears,
+    selectedPlatforms,
+    selectedSkus,
+    rowLimit,
+    order_codes=[],
+    name_zhs=[],
+    months=[]
+  } = query as any;
 
-  if(!selectedYears?.length) {
-    selectedYears = ['2024', '2025', '2026', '2027','2028'];
+  if (!selectedYears?.length) {
+    selectedYears = ['2024', '2025', '2026', '2027', '2028'];
   }
-  const apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYears.join(
-    ',',
-  )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}&rowLimit=${rowLimit||100}`;
+  // let apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYears.join(
+  //   ',',
+  // )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}`;
+  // const list = ['order_codes', 'countrys', 'months'];
+
+  // list.forEach(item => {
+  //   // @ts-ignore
+  //   if (query[item]?.length) {
+  //     if(item === 'countrys') {
+  //       const url = encodeURIComponent(query[item].join(','));
+  //       apiUrl += `&${item}=${url}`;
+  //     } else {
+  //       // @ts-ignore
+  //       apiUrl += `&${item}=${query[item].join(',')}`;
+  //     }
+  //   }
+  // });
+  // apiUrl += `&rowLimit=${rowLimit || 100}`;
+
+  let apiUrl = 'https://kerwin.org.cn/api/data'
+  const body = {
+    years: selectedYears.join(','),
+    platforms: selectedPlatforms.join(','),
+    skus: selectedSkus.join(','),
+    order_codes: order_codes.join(','),
+    name_zhs: name_zhs.join(','),
+    months: months.join(','),
+    rowLimit: rowLimit || 100,
+  }
+
+
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(apiUrl,{ method: 'POST', body: JSON.stringify(body)});
+
     const allData = await response.json();
     // const data = addColorTypeFlag(allData.slice(0, shareParams.rowLimit));
     const data = addColorTypeFlag(allData);
@@ -402,6 +443,3 @@ export async function loadData(query: {
     console.error('获取数据时出错:', error);
   }
 }
-
-
-

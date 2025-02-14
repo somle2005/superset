@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+import { cloneDeep } from 'lodash';
 import { useRef, memo, useEffect } from 'react';
 // @ts-ignore
 import styles from './style/index.module.less';
@@ -55,6 +55,7 @@ let {
 let latitudeSave = 38.913611;
 let longtitudeSave = -77.013222;
 
+// 单个图表内部自己定制拿到的筛选条件
 const getFilterData = (adhocFilters: any) => {
   const latitude =
     adhocFilters.find((item: any) => item.subject === 'latitude')?.comparator ??
@@ -67,6 +68,9 @@ const getFilterData = (adhocFilters: any) => {
     platform: [],
     sku: [],
     year: [],
+    order_code: [],
+    name_zh: [],
+    month: [],
   };
 
   const filterData: any = {
@@ -84,7 +88,24 @@ const getFilterData = (adhocFilters: any) => {
   return filterData;
 };
 
-const getDashBoardsFilters = (dashBoardsFilters: any) => {
+const getDashBoardsFilters = (dashBoardsFilters: Array<any>) => {
+  /**
+   * 有时候取数据字段名叫做name_zh 实际筛选列显示country传给后端参数是countrys
+   */
+
+  // 筛选列叫 country 实际传参给后端是 name_zhs
+  
+  // const map:any = {
+  //   name_zh: 'country',
+  // };
+  const dashBoardsFiltersCopy = cloneDeep(dashBoardsFilters);
+  // dashBoardsFiltersCopy.forEach(item => {
+  //   if(map[item.col]) {
+  //     item.col = map[item.col];
+  //   }
+  // })
+
+
   let flag = false;
   // 带上flag标记是为了确认dashBoardFilters到底有没有这个筛选。没有就不能对原有筛选进行覆盖
   const selectFiler: any = {
@@ -100,10 +121,22 @@ const getDashBoardsFilters = (dashBoardsFilters: any) => {
       flag: false,
       data: [],
     },
+    order_code: {
+      flag: false,
+      data: [],
+    },
+    name_zh: {
+      flag: false,
+      data: [],
+    },
+    month: {
+      flag: false,
+      data: [],
+    },
   };
   const filterData: any = {};
   for (const key in selectFiler) {
-    let target = dashBoardsFilters.find((item: any) => item.col === key)?.val;
+    let target = dashBoardsFiltersCopy.find((item: any) => item.col === key)?.val;
     if (target) {
       selectFiler[key].flag = true;
       flag = true;
@@ -137,8 +170,16 @@ export default memo(function EchartsWaterfall(
 
   const adhocFilters = props.formData.adhocFilters;
 
-  const { skus, platforms, years, latitude, longtitude } =
-    getFilterData(adhocFilters);
+  const {
+    skus,
+    platforms,
+    years,
+    latitude,
+    longtitude,
+    order_codes,
+    name_zhs,
+    months,
+  } = getFilterData(adhocFilters);
 
   // 这里直接赋值不会有引用变化
   selectedYears = years;
@@ -147,7 +188,15 @@ export default memo(function EchartsWaterfall(
   latitudeSave = Number(latitude);
   longtitudeSave = Number(longtitude);
 
-  const queryData = { selectedYears, selectedPlatforms, selectedSkus,rowLimit:undefined };
+  const queryData: any = {
+    selectedYears,
+    selectedPlatforms,
+    selectedSkus,
+    rowLimit: undefined,
+    order_codes,
+    name_zhs,
+    months,
+  };
   const center = { lat: latitudeSave, lng: longtitudeSave };
 
   // DashBoardsFilters筛选栏优先级高于默认图表
@@ -166,6 +215,13 @@ export default memo(function EchartsWaterfall(
     queryData.selectedSkus = filterData.skus.flag
       ? filterData.skus.data
       : queryData.selectedSkus;
+
+    const flagList = ['order_codes', 'name_zhs', 'months'];
+    flagList.forEach(key => {
+      if (filterData[key].flag) {
+        queryData[key] = filterData[key].data;
+      }
+    });
   }
 
   const dataObj = { mapContainer, mapId, queryData, center };
@@ -182,17 +238,14 @@ export default memo(function EchartsWaterfall(
     dataObj.queryData.rowLimit = rowLimit;
   }
 
-
-  if (dataObj.queryData.selectedYears.length === 0) {
-    dataObj.queryData.selectedYears = ['2024', '2025', '2026', '2027','2028'];
+  if (dataObj.queryData?.selectedYears?.length === 0) {
+    dataObj.queryData.selectedYears = ['2024', '2025', '2026', '2027', '2028'];
   }
 
   const colorColumns = props.formData.groupbyColumns || [];
-  if(colorColumns.length) {
-    shareParams.colorColumns = colorColumns
+  if (colorColumns.length) {
+    shareParams.colorColumns = colorColumns;
   }
-
-
 
   useEffect(() => {
     loadGoogleMapsScript(url, initMap, dataObj);
