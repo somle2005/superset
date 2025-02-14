@@ -383,47 +383,47 @@ export async function loadData(query: {
     selectedSkus,
     rowLimit,
     order_codes=[],
-    name_zhs=[],
+    name_ens=[],
     months=[]
   } = query as any;
 
   if (!selectedYears?.length) {
     selectedYears = ['2024', '2025', '2026', '2027', '2028'];
   }
-  // let apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYears.join(
-  //   ',',
-  // )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}`;
-  // const list = ['order_codes', 'countrys', 'months'];
+  let apiUrl = `https://kerwin.org.cn/api/data?years=${selectedYears.join(
+    ',',
+  )}&platforms=${selectedPlatforms.join(',')}&skus=${selectedSkus.join(',')}`;
+  const list = ['order_codes', 'name_ens', 'months'];
 
-  // list.forEach(item => {
-  //   // @ts-ignore
-  //   if (query[item]?.length) {
-  //     if(item === 'countrys') {
-  //       const url = encodeURIComponent(query[item].join(','));
-  //       apiUrl += `&${item}=${url}`;
-  //     } else {
-  //       // @ts-ignore
-  //       apiUrl += `&${item}=${query[item].join(',')}`;
-  //     }
-  //   }
-  // });
-  // apiUrl += `&rowLimit=${rowLimit || 100}`;
+  list.forEach(item => {
+    // @ts-ignore
+    if (query[item]?.length) {
+      if(item === 'name_ens') {
+        const url = encodeURIComponent(query[item].join(','));
+        apiUrl += `&${item}=${url}`;
+      } else {
+        // @ts-ignore
+        apiUrl += `&${item}=${query[item].join(',')}`;
+      }
+    }
+  });
+  apiUrl += `&rowLimit=${rowLimit || 100}`;
 
-  let apiUrl = 'https://kerwin.org.cn/api/data'
-  const body = {
-    years: selectedYears.join(','),
-    platforms: selectedPlatforms.join(','),
-    skus: selectedSkus.join(','),
-    order_codes: order_codes.join(','),
-    name_zhs: name_zhs.join(','),
-    months: months.join(','),
-    rowLimit: rowLimit || 100,
-  }
+  // let apiUrl = 'https://kerwin.org.cn/api/data'
+  // const body = {
+  //   years: selectedYears.join(','),
+  //   platforms: selectedPlatforms.join(','),
+  //   skus: selectedSkus.join(','),
+  //   order_codes: order_codes.join(','),
+  //   name_zhs: name_zhs.join(','),
+  //   months: months.join(','),
+  //   rowLimit: rowLimit || 100,
+  // }
 
 
   try {
-    const response = await fetch(apiUrl,{ method: 'POST', body: JSON.stringify(body)});
-
+    // const response = await fetch(apiUrl,{ method: 'POST', body: JSON.stringify(body)});
+    const response = await fetch(apiUrl);
     const allData = await response.json();
     // const data = addColorTypeFlag(allData.slice(0, shareParams.rowLimit));
     const data = addColorTypeFlag(allData);

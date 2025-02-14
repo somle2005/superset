@@ -69,7 +69,7 @@ const getFilterData = (adhocFilters: any) => {
     sku: [],
     year: [],
     order_code: [],
-    name_zh: [],
+    name_en: [],
     month: [],
   };
 
@@ -93,7 +93,7 @@ const getDashBoardsFilters = (dashBoardsFilters: Array<any>) => {
    * 有时候取数据字段名叫做name_zh 实际筛选列显示country传给后端参数是countrys
    */
 
-  // 筛选列叫 country 实际传参给后端是 name_zhs
+  // 筛选列叫 country 实际传参给后端是 name_ens
   
   // const map:any = {
   //   name_zh: 'country',
@@ -125,7 +125,7 @@ const getDashBoardsFilters = (dashBoardsFilters: Array<any>) => {
       flag: false,
       data: [],
     },
-    name_zh: {
+    name_en: {
       flag: false,
       data: [],
     },
@@ -177,7 +177,7 @@ export default memo(function EchartsWaterfall(
     latitude,
     longtitude,
     order_codes,
-    name_zhs,
+    name_ens,
     months,
   } = getFilterData(adhocFilters);
 
@@ -194,7 +194,7 @@ export default memo(function EchartsWaterfall(
     selectedSkus,
     rowLimit: undefined,
     order_codes,
-    name_zhs,
+    name_ens,
     months,
   };
   const center = { lat: latitudeSave, lng: longtitudeSave };
@@ -216,7 +216,7 @@ export default memo(function EchartsWaterfall(
       ? filterData.skus.data
       : queryData.selectedSkus;
 
-    const flagList = ['order_codes', 'name_zhs', 'months'];
+    const flagList = ['order_codes', 'name_ens', 'months'];
     flagList.forEach(key => {
       if (filterData[key].flag) {
         queryData[key] = filterData[key].data;
