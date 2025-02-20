@@ -27,6 +27,7 @@ data有数据坐标 开始循环
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { message } from 'antd';
+import { ROW_LIMIT } from '../constant';
 
 const createIdleExcute = () => {
   const idleCallbackFn = (task: () => void) => {
@@ -92,7 +93,7 @@ const url = `https://maps.googleapis.com/maps/api/js?key=${YOUR_API_KEY}&librari
 const shareParams = {
   latitudeKey: 'latitude',
   longtitudeKey: 'longtitude',
-  rowLimit: 100,
+  rowLimit: ROW_LIMIT,
   colorColumns: [],
 };
 
@@ -407,7 +408,7 @@ export async function loadData(query: {
       }
     }
   });
-  apiUrl += `&rowLimit=${rowLimit || 100}`;
+  apiUrl += `&rowLimit=${rowLimit || ROW_LIMIT}`;
 
   // let apiUrl = 'https://kerwin.org.cn/api/data'
   // const body = {
