@@ -157,7 +157,7 @@ export default memo(function EchartsWaterfall(
   props: WaterfallChartTransformedProps,
 ) {
   const mapContainer = useRef(null);
-  console.log(props, 'googleHeatMapProps-初始渲染了');
+  // console.log(props, 'googleHeatMapProps-初始渲染了');
 
   // console.log(props, 'googleHeatMapProps');
 
