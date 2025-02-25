@@ -23,7 +23,7 @@ import styles from './style/index.module.less';
 // import './style/index.css';
 import { WaterfallChartTransformedProps } from './types';
 import { initData, initMap, loadGoogleMapsScript, idleLoadData } from './utils';
-import FilterModal from './component/FilterModal';
+// import FilterModal from './component/FilterModal';
 import GoogleMap from './component/GoogleMap';
 
 /* eslint-disable */
@@ -253,7 +253,7 @@ export default memo(function EchartsWaterfall(
 
   return (
     <div className={`GoogleHeatMap ${styles.GoogleHeatMap}`}>
-      <FilterModal idleLoadData={idleLoadData} />
+      {/* <FilterModal idleLoadData={idleLoadData} /> */}
       <GoogleMap ref={mapContainer} />
       {/* <div
         id="map"
