@@ -597,6 +597,9 @@ if (isDevMode) {
   };
 }
 
+// 无论是开发还是本地都是https请求
+config.devServer.https = true // 自动生成证书
+
 // To
 // e.g. npm run package-stats
 if (process.env.BUNDLE_ANALYZER) {
