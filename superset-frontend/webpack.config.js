@@ -565,6 +565,7 @@ if (isDevMode) {
     historyApiFallback: true,
     hot: true,
     port: devserverPort,
+    https: true, // 自动生成证书
     // Only serves bundled files from webpack-dev-server
     // and proxy everything else to Superset backend
     // proxy: [
@@ -598,7 +599,7 @@ if (isDevMode) {
 }
 
 // 无论是开发还是本地都是https请求
-config.devServer.https = true // 自动生成证书
+// config.devServer.https = true // 自动生成证书
 
 // To
 // e.g. npm run package-stats
