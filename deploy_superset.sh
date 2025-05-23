@@ -102,6 +102,8 @@ pip install --upgrade pip
 pip install -e .
 
 pip install pymysql psycopg2-binary mysqlclient Pillow gunicorn   # 添加 Pillow 和 Gunicorn
+pip uninstall marshmallow -y
+pip install marshmallow==3.20.1
 
 
 
