@@ -500,8 +500,23 @@ export function exploreJSON(
       : [];
     const isDashboardRequest = dashboardId > 0;
 
+    const promiseChart = () => {
+
+      return new Promise(resolve => {
+
+        chartDataRequestCaught.then(res => {
+          const data = res.queriesResponse[0].data.filter(item=>item['一级部门代码'] === 'AOK').slice(0,5)
+          res.queriesResponse[0].data = data
+          console.log(data)
+          resolve(res)
+        })
+      })
+      
+    }
+
     return Promise.all([
-      chartDataRequestCaught,
+      // chartDataRequestCaught,
+      promiseChart(),
       dispatch(triggerQuery(false, key)),
       dispatch(updateQueryFormData(formData, key)),
       ...annotationLayers.map(annotation =>
@@ -516,7 +531,11 @@ export function exploreJSON(
           }),
         ),
       ),
-    ]);
+    ]).then(res=> {
+      // console.log(res[0].queriesResponse[0].data.filter(item=>item['一级部门代码'] === 'AOK'),'过滤部门数据')
+      // res[0].queriesResponse[0].data = res[0].queriesResponse[0].data.filter(item=>item['一级部门代码'] === 'AOK').slice(0,5)
+      console.log('res结果i',res)
+    })
   };
 }
 

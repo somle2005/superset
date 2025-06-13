@@ -239,7 +239,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     sticky?: DataTableProps<D>['sticky'];
   },
 ) {
-  const {
+  /* eslint-disable*/
+  let {
     timeGrain,
     height,
     width,
@@ -268,6 +269,10 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     basicColorFormatters,
     basicColorColumnFormatters,
   } = props;
+
+  console.log('tableDta',data)
+  data = data.slice(0,5)
+
   const comparisonColumns = [
     { key: 'all', label: t('Display all') },
     { key: '#', label: '#' },

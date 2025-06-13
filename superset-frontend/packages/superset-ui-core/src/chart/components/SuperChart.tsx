@@ -186,6 +186,11 @@ class SuperChart extends PureComponent<Props, {}> {
       theme,
     });
 
+
+
+    chartProps.queriesData[0].data =  chartProps.queriesData[0].data.slice(0,1)
+    console.log(chartProps, 'chartProps-这里最好');
+
     let chart;
     // Render the no results component if the query data is null or empty
     const noResultQueries =

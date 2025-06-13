@@ -529,6 +529,7 @@ const Chart = props => {
           isInView={props.isInView}
           emitCrossFilters={emitCrossFilters}
         />
+  
       </ChartWrapper>
     </SliceContainer>
   );
