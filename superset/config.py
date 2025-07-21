@@ -526,7 +526,7 @@ DEFAULT_FEATURE_FLAGS: dict[str, bool] = {
     # impersonation is enabled
     "CACHE_IMPERSONATION": False,
     # Enable caching per user key for Superset cache (not database cache impersonation)
-    "CACHE_QUERY_BY_USER": False,
+    "CACHE_QUERY_BY_USER": True,
     # Enable sharing charts with embedding
     "EMBEDDABLE_CHARTS": True,
     "DRILL_TO_DETAIL": True,
@@ -772,7 +772,12 @@ CACHE_DEFAULT_TIMEOUT = int(timedelta(days=1).total_seconds())
 CACHE_CONFIG: CacheConfig = {"CACHE_TYPE": "NullCache"}
 
 # Cache for datasource metadata and query results
-DATA_CACHE_CONFIG: CacheConfig = {"CACHE_TYPE": "NullCache"}
+DATA_CACHE_CONFIG: CacheConfig = {
+    "CACHE_TYPE": "RedisCache",
+    "CACHE_DEFAULT_TIMEOUT": 26400,  # 缓存有效时间（秒），例如 1 天
+    "CACHE_KEY_PREFIX": "superset_query_",
+    "REDIS_URL": "redis://localhost:6379/0",  # 改成你的 Redis 连接地址
+}
 
 # Cache for dashboard filter state. `CACHE_TYPE` defaults to `SupersetMetastoreCache`
 # that stores the values in the key-value table in the Superset metastore, as it's
