@@ -576,13 +576,15 @@ if (isDevMode) {
     //     return proxyConfig
     //   },
     // ],
+    https: true,
     proxy: {
       '/': {
         ...proxyConfig,
         changeOrigin: true,
         // target: 'http://192.168.10.17:8088'
-        target: 'http://192.168.10.199:8088', // 后端服务的IP和端口
-
+        // target: 'http://192.168.10.199:8088', // 后端服务的IP和端口
+        // target: 'https://superset.somle.com:55015',
+        target: 'https://superset.so-shine.com:55015'
       }
     },
     client: {
